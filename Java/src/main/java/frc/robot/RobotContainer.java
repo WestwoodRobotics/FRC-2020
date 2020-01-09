@@ -4,7 +4,7 @@ import static frc.robot.Constants.JoyConstants.P_OI_JOY_LEFT;
 import static frc.robot.Constants.JoyConstants.P_OI_JOY_RIGHT;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveTrain;
 
 public class RobotContainer{
@@ -23,15 +23,11 @@ public class RobotContainer{
 
         //Tank Drive
         s_driveTrain.setDefaultCommand(
-            new RunCommand(
-                () -> s_driveTrain.takeStickInputs(
-                    () -> leftJoy.getY(),
-                    () -> rightJoy.getY()
-            ), s_driveTrain)
+            new TankDrive(
+                () -> leftJoy.getY(), 
+                () -> rightJoy.getY(), 
+                s_driveTrain)
         );
-
-
-
     }
 
     private void configureButtonBindings(){

@@ -11,7 +11,6 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -47,10 +46,6 @@ public class DriveTrain extends SubsystemBase {
   // Drive wheels
   public void driveWheels(double lSpeed, double rSpeed){
     d.tankDrive(lSpeed, rSpeed);
-  }
-
-  public void takeStickInputs(DoubleSupplier leftStick, DoubleSupplier rightStick){
-    d.tankDrive(leftStick.getAsDouble(), rightStick.getAsDouble());
   }
 
   // Stop wheels
