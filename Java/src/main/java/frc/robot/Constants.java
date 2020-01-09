@@ -13,7 +13,7 @@ public final class Constants{
     }
 
     //Constants for JoySticks
-    public static final class OIConstants{
+    public static final class JoyConstants{
         public static final int P_OI_JOY_LEFT = 0,
                                 P_OI_JOY_RIGHT = 1; 
     }

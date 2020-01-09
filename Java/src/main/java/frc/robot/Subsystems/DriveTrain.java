@@ -5,7 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
+
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -23,16 +25,12 @@ public class DriveTrain extends SubsystemBase {
   //Variables/Features of Drive Train
 
   private WPI_VictorSPX leftMaster  = new WPI_VictorSPX(DriveConstants.P_DRIVE_LEFT_vicSPX_1),
-                        rightMaster = new WPI_VictorSPX(DriveConstants.P_DRIVE_RIGHT_vicSPX_1);
+                                    rightMaster = new WPI_VictorSPX(DriveConstants.P_DRIVE_RIGHT_vicSPX_1);
 
   private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(DriveConstants.P_DRIVE_LEFT_vicSPX_2),
-                        rightFollow = new WPI_VictorSPX(DriveConstants.P_DRIVE_RIGHT_vicSPX_2);
+                                    rightFollow = new WPI_VictorSPX(DriveConstants.P_DRIVE_RIGHT_vicSPX_2);
 
-  //Grouping the master motor with its follow motors
-  private SpeedControllerGroup lMotorGroup = new SpeedControllerGroup(leftMaster, leftFollow),
-                               rMotorGroup = new SpeedControllerGroup(rightMaster, rightFollow);
-
-  public DifferentialDrive d = new DifferentialDrive(lMotorGroup, rMotorGroup);
+  private DifferentialDrive d = new DifferentialDrive(leftMaster, rightMaster);
   
 
   /*insert encoders*/
@@ -40,20 +38,22 @@ public class DriveTrain extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public DriveTrain() {
-    this.setDefaultCommand(new TankDrive());
+    leftFollow.follow(leftMaster);
+    rightFollow.follow(rightMaster);
   }
 
-                /*Here*/
-
-
-
   //--------------------------------------------------------------------------------------------------
-  // Method for driving the wheels
+  
+  // Drive wheels
   public void driveWheels(double lSpeed, double rSpeed){
     d.tankDrive(lSpeed, rSpeed);
   }
 
-  // Method for stopping the wheels
+  public void takeStickInputs(DoubleSupplier leftStick, DoubleSupplier rightStick){
+    d.tankDrive(leftStick.getAsDouble(), rightStick.getAsDouble());
+  }
+
+  // Stop wheels
   public void stopWheels(){
     d.tankDrive(0, 0);
   }
