@@ -29,8 +29,9 @@ public class DriveTrain extends SubsystemBase {
   private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(DriveConstants.P_DRIVE_LEFT_vicSPX_2),
                                     rightFollow = new WPI_VictorSPX(DriveConstants.P_DRIVE_RIGHT_vicSPX_2);
 
-  private DifferentialDrive d = new DifferentialDrive(leftMaster, rightMaster);
+  private DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
   
+  private boolean slowMode = false;
 
   /*insert encoders*/
 
@@ -39,18 +40,34 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain() {
     leftFollow.follow(leftMaster);
     rightFollow.follow(rightMaster);
+
+    leftMaster.setInverted(true);
+    leftFollow.setInverted(true);
+    rightMaster.setInverted(true);
+    rightFollow.setInverted(true);
   }
 
   //--------------------------------------------------------------------------------------------------
   
   // Drive wheels
-  public void driveWheels(double lSpeed, double rSpeed){
-    d.tankDrive(lSpeed, rSpeed);
+  public void driveWheels(double leftSpeed, double rightSpeed){
+    drive.tankDrive(leftSpeed, rightSpeed);
+    //System.out.println("Working");
+  }
+
+  //Set slow mode
+  public void setSlow(boolean slowMode){
+    this.slowMode = slowMode;
+  }
+
+  //Get slow mode
+  public boolean getSlow(){
+    return slowMode;
   }
 
   // Stop wheels
   public void stopWheels(){
-    d.tankDrive(0, 0);
+    drive.stopMotor();
   }
 
   //--------------------------------------------------------------------------------------------------
