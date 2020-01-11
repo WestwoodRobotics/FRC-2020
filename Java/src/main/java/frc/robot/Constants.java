@@ -12,6 +12,11 @@ public final class Constants{
                                         P_DRIVE_RIGHT_vicSPX_2 = 3;
     }
 
+    public static final class IntakeConstants{
+        public static final int P_SHOOTER_VICTOR_1 = 0;
+        public static final int P_SHOOTER_VICTOR_2 = 1;
+    }
+
     //Constants for JoySticks
     public static final class JoyConstants{
         public static final int P_OI_JOY_LEFT = 0,
