@@ -5,11 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +33,8 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
   
   private boolean slowMode = false;
+
+  private AHRS m_gyro = new AHRS();
 
   /*insert encoders*/
 
@@ -68,6 +71,22 @@ public class DriveTrain extends SubsystemBase {
   // Stop wheels
   public void stopWheels(){
     drive.stopMotor();
+  }
+
+  //--------------------------------------------------------------------------------------------------
+  // Gyro / Turning DriveTrain
+
+  public float getHeading(){
+    return m_gyro.getCompassHeading();
+  }
+
+  // Setting the gyro value to 0
+  public void zeroHeading(){
+    m_gyro.reset();
+  }
+
+  public void turnRate(double rt){
+    drive.curvatureDrive(0, rt, true);
   }
 
   //--------------------------------------------------------------------------------------------------

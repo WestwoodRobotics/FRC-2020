@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -20,8 +20,8 @@ public class BallShooter extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   //Variables/Features of ball shooter
 
-  private WPI_VictorSPX intakeMotor1 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_VICTOR_1);
-  private WPI_VictorSPX intakeMotor2 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_VICTOR_2);
+  private WPI_VictorSPX intakeMotor1 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_1);
+  private WPI_VictorSPX intakeMotor2 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
 
   private boolean intake;
   //--------------------------------------------------------------------------------------------------

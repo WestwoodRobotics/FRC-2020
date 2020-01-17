@@ -4,11 +4,10 @@ import static frc.robot.Constants.JoyConstants.P_OI_JOY_LEFT;
 import static frc.robot.Constants.JoyConstants.P_OI_JOY_RIGHT;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.TankDrive;
-import frc.robot.Subsystems.BallShooter;
-import frc.robot.Subsystems.DriveTrain;
+import frc.robot.subsystems.BallShooter;
+import frc.robot.subsystems.DriveTrain;
 
 public class RobotContainer{
     //--------------------------------------------------------------------------------------------------
