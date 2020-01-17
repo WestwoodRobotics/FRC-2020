@@ -23,8 +23,8 @@ public class BallShooter extends SubsystemBase {
   private WPI_VictorSPX intakeMotor2 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
 
   // shreyes added code kindly remove at a later date
-  private WPI_VictorSPX intakeMotor3 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_3);
-  private WPI_VictorSPX intakeMotor4 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_4);
+  private WPI_VictorSPX intakeMotor3 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_1);
+  private WPI_VictorSPX intakeMotor4 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
   
   private boolean intake;
   //--------------------------------------------------------------------------------------------------
