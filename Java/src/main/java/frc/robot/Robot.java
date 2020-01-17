@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
 
     rc = new RobotContainer();
-    
+    SmartDashboard.putNumber("Speed", 0.0);
   }
 
   /**
@@ -89,11 +89,17 @@ public class Robot extends TimedRobot {
     }
   }
 
+  @Override
+  public void teleopInit() {
+    SmartDashboard.putNumber("Speed", 0.0);
+  }
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
+    CommandScheduler.getInstance().run();
   }
 
   /**

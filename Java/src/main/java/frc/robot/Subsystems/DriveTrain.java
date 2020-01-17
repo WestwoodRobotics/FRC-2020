@@ -41,13 +41,20 @@ public class DriveTrain extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public DriveTrain() {
-    leftFollow.follow(leftMaster);
-    rightFollow.follow(rightMaster);
+    leftMaster.configFactoryDefault();
+    leftFollow.configFactoryDefault();
+    rightMaster.configFactoryDefault();
+    rightFollow.configFactoryDefault();
 
     leftMaster.setInverted(true);
     leftFollow.setInverted(true);
     rightMaster.setInverted(true);
     rightFollow.setInverted(true);
+    
+    leftFollow.follow(leftMaster);
+    rightFollow.follow(rightMaster);
+
+    //drive.setSafetyEnabled(false);
   }
 
   //--------------------------------------------------------------------------------------------------
@@ -55,7 +62,6 @@ public class DriveTrain extends SubsystemBase {
   // Drive wheels
   public void driveWheels(double leftSpeed, double rightSpeed){
     drive.tankDrive(leftSpeed, rightSpeed);
-    //System.out.println("Working");
   }
 
   //Set slow mode

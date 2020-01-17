@@ -19,10 +19,13 @@ public class BallShooter extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   //Variables/Features of ball shooter
-
   private WPI_VictorSPX intakeMotor1 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_1);
   private WPI_VictorSPX intakeMotor2 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
 
+  // shreyes added code kindly remove at a later date
+  private WPI_VictorSPX intakeMotor3 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_3);
+  private WPI_VictorSPX intakeMotor4 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_4);
+  
   private boolean intake;
   //--------------------------------------------------------------------------------------------------
   // Constructor
@@ -39,6 +42,10 @@ public class BallShooter extends SubsystemBase {
       intake = true;
       intakeMotor1.set(1);
       intakeMotor2.set(1);
+
+      // shreyes added code kindly remove at a later date
+      // intakeMotor3.set(1);
+      // intakeMotor4.set(1);
     }
   }
 
@@ -46,6 +53,10 @@ public class BallShooter extends SubsystemBase {
     if(!intake){
       intakeMotor1.set(-1);
       intakeMotor2.set(-1);
+
+      // shreyes added code kindly remove at a later date
+      // intakeMotor3.set(-1);
+      // intakeMotor4.set(-1);
     } 
   }
 
@@ -53,6 +64,10 @@ public class BallShooter extends SubsystemBase {
     intake = false;
     intakeMotor1.set(0);
     intakeMotor2.set(0);
+
+    // shreyes added code kindly remove at a later date
+   // intakeMotor3.set(0);
+      // intakeMotor4.set(0);
   }
 
   //--------------------------------------------------------------------------------------------------

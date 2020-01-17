@@ -41,10 +41,10 @@ public class TankDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!s_dt.getSlow())
+    //if(!s_dt.getSlow())
       s_dt.driveWheels(leftSpeed.getAsDouble(), rightSpeed.getAsDouble());
-    else
-      s_dt.driveWheels(leftSpeed.getAsDouble()/2.0, rightSpeed.getAsDouble()/2.0);
+    //else
+      //s_dt.driveWheels(leftSpeed.getAsDouble()/2.0, rightSpeed.getAsDouble()/2.0);
   }
 
   //--------------------------------------------------------------------------------------------------
