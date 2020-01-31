@@ -7,14 +7,17 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_follow_vicSPX;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_master_vicSPX;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_follow_vicSPX;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_master_vicSPX;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
 
 public class DriveTrain extends SubsystemBase {
   /**
@@ -23,36 +26,32 @@ public class DriveTrain extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   //Variables/Features of Drive Train
+  private WPI_VictorSPX leftMaster  = new WPI_VictorSPX(P_DRIVE_LEFT_master_vicSPX),
+                                    rightMaster = new WPI_VictorSPX(P_DRIVE_RIGHT_master_vicSPX);
 
-  private WPI_VictorSPX leftMaster  = new WPI_VictorSPX(DriveConstants.P_DRIVE_LEFT_vicSPX_1),
-                            rightMaster = new WPI_VictorSPX(DriveConstants.P_DRIVE_RIGHT_vicSPX_1);
-
-  private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(DriveConstants.P_DRIVE_LEFT_vicSPX_2),
-                            rightFollow = new WPI_VictorSPX(DriveConstants.P_DRIVE_RIGHT_vicSPX_2);
+  private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(P_DRIVE_LEFT_follow_vicSPX),
+                            rightFollow = new WPI_VictorSPX(P_DRIVE_RIGHT_follow_vicSPX);
 
   private DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
   
   private boolean slowMode = false;
 
-  private AHRS m_gyro = new AHRS();
+  private AHRS imu = new AHRS();
 
   /*insert encoders*/
 
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public DriveTrain() {
-    leftMaster.configFactoryDefault();
-    leftFollow.configFactoryDefault();
-    rightMaster.configFactoryDefault();
-    rightFollow.configFactoryDefault();
-
     leftMaster.setInverted(true);
     leftFollow.setInverted(true);
     rightMaster.setInverted(true);
     rightFollow.setInverted(true);
+
+    drive.setMaxOutput(1);
     
-    leftFollow.follow(leftMaster);
-    rightFollow.follow(rightMaster);
+    //leftFollow.follow(leftMaster);
+    //rightFollow.follow(rightMaster);
 
     //drive.setSafetyEnabled(false);
   }
@@ -62,6 +61,8 @@ public class DriveTrain extends SubsystemBase {
   // Drive wheels
   public void driveWheels(double leftSpeed, double rightSpeed){
     drive.tankDrive(leftSpeed, rightSpeed);
+    //leftMaster.set(0.5);
+    
   }
 
   //Set slow mode
@@ -81,14 +82,14 @@ public class DriveTrain extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   // Gyro / Turning DriveTrain
-
-  public float getHeading(){
-    return m_gyro.getCompassHeading();
+  public double getHeading(){
+    SmartDashboard.putNumber("gyro", imu.pidGet());
+    return imu.pidGet();
   }
 
   // Setting the gyro value to 0
   public void zeroHeading(){
-    m_gyro.reset();
+    imu.reset();
   }
 
   public void turnRate(double rt){

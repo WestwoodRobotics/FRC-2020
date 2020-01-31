@@ -8,17 +8,17 @@ public final class Constants{
     public static final class DriveConstants{
         
         // Motor Controller Ports
-        public static final int P_DRIVE_LEFT_vicSPX_1 = 0,
-                                        P_DRIVE_RIGHT_vicSPX_1 = 2,
-                                        P_DRIVE_LEFT_vicSPX_2 = 1,
-                                        P_DRIVE_RIGHT_vicSPX_2 = 3;
+        public static final int P_DRIVE_LEFT_master_vicSPX = 0, //Change to 0 after done testing Falcons
+                                        P_DRIVE_RIGHT_master_vicSPX = 2, //Change to 2 after done testing Falcons
+                                        P_DRIVE_LEFT_follow_vicSPX = 1,
+                                        P_DRIVE_RIGHT_follow_vicSPX = 3;
         
 
         // Turn PID Constants
-        public static final double C_kTurn_P = 0.1,
-                                        C_kTurn_I = 0.1,
-                                        C_kTurn_D = 0.1;
-                                    }
+        public static double C_kTurn_P = 0.004,
+                                        C_kTurn_I = 0,
+                                        C_kTurn_D = 0.000469;
+    }
 
     public static final class IntakeConstants{
         public static final int P_SHOOTER_vicSPX_1 = 4;

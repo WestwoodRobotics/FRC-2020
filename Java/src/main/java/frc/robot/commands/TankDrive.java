@@ -43,6 +43,7 @@ public class TankDrive extends CommandBase {
   public void execute() {
     //if(!s_dt.getSlow())
       s_dt.driveWheels(leftSpeed.getAsDouble(), rightSpeed.getAsDouble());
+      System.out.println(leftSpeed.getAsDouble() + ", " + rightSpeed.getAsDouble());
     //else
       //s_dt.driveWheels(leftSpeed.getAsDouble()/2.0, rightSpeed.getAsDouble()/2.0);
   }

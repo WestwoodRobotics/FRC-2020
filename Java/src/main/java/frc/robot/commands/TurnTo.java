@@ -8,8 +8,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.Constants.DriveConstants;
+
+import static frc.robot.Constants.DriveConstants.*;
 import frc.robot.subsystems.DriveTrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -19,26 +21,24 @@ public class TurnTo extends PIDCommand {
   /**
    * Creates a new TurnTo.
    */
-
   public TurnTo(double targetAngle, DriveTrain dt) {
     super(
         // The controller that the command will use
-        new PIDController(DriveConstants.C_kTurn_P, DriveConstants.C_kTurn_I, DriveConstants.C_kTurn_D),
+        new PIDController(C_kTurn_P, C_kTurn_I, C_kTurn_D),
         
-        () -> dt.getHeading(),          // This should return the measurement
-        () -> targetAngle,              // This should return the setpoint (can also be a constant)
+        dt::getHeading,          // This should return the measurement
+        targetAngle,              // This should return the setpoint (can also be a constant)
         output -> dt.turnRate(output)   // This uses the output
-        
-        );
-        
-      // Use addRequirements() here to declare subsystem dependencies.
-      
+    );
     
-      // Configure additional PID options by calling `getController` here.
-      getController().enableContinuousInput(0, 360);
-      
-      
-      //getController().setOutputRange(-0.37, 0.37); NO SET OUTPUT RANGE
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(dt);
+  
+    // Configure additional PID options by calling `getController` here.
+    getController().enableContinuousInput(-180, 180);
+    getController().setTolerance(2.5);
+    
+    //getController().setOutputRange(-0.37, 0.37); NO SET OUTPUT RANGE
   }
 
   //--------------------------------------------------------------------------------------------------
@@ -53,4 +53,5 @@ public class TurnTo extends PIDCommand {
   public boolean isFinished() {
     return atSetpoint();
   }
+
 }
