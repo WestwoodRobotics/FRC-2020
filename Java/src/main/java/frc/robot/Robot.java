@@ -43,9 +43,9 @@ public class Robot extends TimedRobot {
 
     rc = new RobotContainer();
 
-    SmartDashboard.putNumber("P", 0);
-    SmartDashboard.putNumber("I", 0);
-    SmartDashboard.putNumber("D", 0);
+    //SmartDashboard.putNumber("P", 0);
+    //SmartDashboard.putNumber("I", 0);
+    //SmartDashboard.putNumber("D", 0);
   }
 
   /**
@@ -95,11 +95,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    C_kTurn_P = SmartDashboard.getNumber("P", 0.0);
-    C_kTurn_I = SmartDashboard.getNumber("I", 0.0);
-    C_kTurn_D = SmartDashboard.getNumber("D", 0.0);
+    //C_kTurn_P = SmartDashboard.getNumber("P", 0.0);
+    //C_kTurn_I = SmartDashboard.getNumber("I", 0.0);
+    //C_kTurn_D = SmartDashboard.getNumber("D", 0.0);
 
-    ((PIDCommand)rc.getAutonomousCommand()).getController().setPID(C_kTurn_P, C_kTurn_I, C_kTurn_D);
+    //((PIDCommand)rc.getAutonomousCommand()).getController().setPID(C_kTurn_P, C_kTurn_I, C_kTurn_D);
     
 
     /*switch (m_autoSelected) {

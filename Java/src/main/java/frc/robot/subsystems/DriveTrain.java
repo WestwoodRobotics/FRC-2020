@@ -12,7 +12,8 @@ import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_master_vicSPX;
 import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_follow_vicSPX;
 import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_master_vicSPX;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -26,11 +27,11 @@ public class DriveTrain extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   //Variables/Features of Drive Train
-  private WPI_VictorSPX leftMaster  = new WPI_VictorSPX(P_DRIVE_LEFT_master_vicSPX),
-                                    rightMaster = new WPI_VictorSPX(P_DRIVE_RIGHT_master_vicSPX);
+  private WPI_TalonFX leftMaster  = new WPI_TalonFX(P_DRIVE_LEFT_master_vicSPX),
+                                    rightMaster = new WPI_TalonFX(P_DRIVE_RIGHT_master_vicSPX);
 
-  private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(P_DRIVE_LEFT_follow_vicSPX),
-                            rightFollow = new WPI_VictorSPX(P_DRIVE_RIGHT_follow_vicSPX);
+  private WPI_TalonFX leftFollow  = new WPI_TalonFX(P_DRIVE_LEFT_follow_vicSPX),
+                            rightFollow = new WPI_TalonFX(P_DRIVE_RIGHT_follow_vicSPX);
 
   private DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
   
@@ -83,7 +84,7 @@ public class DriveTrain extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Gyro / Turning DriveTrain
   public double getHeading(){
-    SmartDashboard.putNumber("gyro", imu.pidGet());
+    //SmartDashboard.putNumber("gyro", imu.pidGet());
     return imu.pidGet();
   }
 
@@ -94,6 +95,14 @@ public class DriveTrain extends SubsystemBase {
 
   public void turnRate(double rt){
     drive.curvatureDrive(0, rt, true);
+  }
+
+  public double leftEncoderGet(){
+    return leftMaster.getSelectedSensorPosition();
+  }
+
+  public double rightEncoderGet(){
+    return rightMaster.getSelectedSensorPosition();
   }
 
   //--------------------------------------------------------------------------------------------------

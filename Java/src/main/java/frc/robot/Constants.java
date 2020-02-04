@@ -15,9 +15,8 @@ public final class Constants{
         
 
         // Turn PID Constants
-        public static double C_kTurn_P = 0.004,
-                                        C_kTurn_I = 0,
-                                        C_kTurn_D = 0.000469;
+        public static double C_kTurn_P = 17.8,
+                                        C_kTurn_D = 6.76;
     }
 
     public static final class IntakeConstants{

@@ -7,11 +7,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+import static frc.robot.Constants.DriveConstants.C_kTurn_D;
+import static frc.robot.Constants.DriveConstants.C_kTurn_P;
 
-import static frc.robot.Constants.DriveConstants.*;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -24,8 +25,7 @@ public class TurnTo extends PIDCommand {
   public TurnTo(double targetAngle, DriveTrain dt) {
     super(
         // The controller that the command will use
-        new PIDController(C_kTurn_P, C_kTurn_I, C_kTurn_D),
-        
+        new PIDController(C_kTurn_P, 0.0, C_kTurn_D),
         dt::getHeading,          // This should return the measurement
         targetAngle,              // This should return the setpoint (can also be a constant)
         output -> dt.turnRate(output)   // This uses the output
@@ -37,8 +37,6 @@ public class TurnTo extends PIDCommand {
     // Configure additional PID options by calling `getController` here.
     getController().enableContinuousInput(-180, 180);
     getController().setTolerance(2.5);
-    
-    //getController().setOutputRange(-0.37, 0.37); NO SET OUTPUT RANGE
   }
 
   //--------------------------------------------------------------------------------------------------
