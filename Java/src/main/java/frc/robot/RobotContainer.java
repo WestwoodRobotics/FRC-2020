@@ -19,8 +19,8 @@ public class RobotContainer{
     private final DriveTrain s_driveTrain;
     //public final BallShooter s_ballShooter;
 
-    private TurnTo turn;
-    private ProfiledTurnTo turn2;
+    private TurnTo a_turn;
+    private ProfiledTurnTo a_turn2;
 
     private Joystick leftJoy  = new Joystick(P_OI_JOY_LEFT);            // Declaring Joysticks
     private Joystick rightJoy = new Joystick(P_OI_JOY_RIGHT);
@@ -29,8 +29,8 @@ public class RobotContainer{
     // Constructor
     public RobotContainer(){
         s_driveTrain = new DriveTrain();
-        turn = new TurnTo(90, s_driveTrain);
-        turn2 = new ProfiledTurnTo(90, s_driveTrain);
+        a_turn = new TurnTo(90, s_driveTrain);
+        a_turn2 = new ProfiledTurnTo(90, s_driveTrain);
         //s_ballShooter = new BallShooter();
 
         //Tank Drive
@@ -61,7 +61,7 @@ public class RobotContainer{
     }
 
     public Command getAutonomousCommand(){
-        return turn2;
+        return a_turn2;
     }
 
     public void resetGyro(){

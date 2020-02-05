@@ -7,11 +7,8 @@
 
 package frc.robot.commands;
 
-import static frc.robot.Constants.DriveConstants.C_kTurn_D;
-import static frc.robot.Constants.DriveConstants.C_kTurn_P;
-
+import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
 
@@ -25,7 +22,7 @@ public class TurnTo extends PIDCommand {
   public TurnTo(double targetAngle, DriveTrain dt) {
     super(
         // The controller that the command will use
-        new PIDController(C_kTurn_P, 0.0, C_kTurn_D),
+        new PIDController(C_kP_turn , C_kI_turn , C_kD_turn),
         dt::getHeading,          // This should return the measurement
         targetAngle,              // This should return the setpoint (can also be a constant)
         output -> dt.turnRate(output)   // This uses the output
@@ -44,12 +41,10 @@ public class TurnTo extends PIDCommand {
   public boolean atSetpoint(){
     return getController().atSetpoint();
   }
-
-
+  
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return atSetpoint();
   }
-
 }
