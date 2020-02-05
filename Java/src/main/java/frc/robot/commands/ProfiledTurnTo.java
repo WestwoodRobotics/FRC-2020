@@ -7,14 +7,14 @@
 
 package frc.robot.commands;
 
-import static frc.robot.Constants.DriveConstants.C_kTurn_D;
-import static frc.robot.Constants.DriveConstants.C_kTurn_P;
-
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.subsystems.DriveTrain;
+import static frc.robot.Constants.DriveConstants.*;
+
+
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -30,18 +30,19 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
       // The ProfiledPIDController used by the command
       new ProfiledPIDController(
           // The PID gains
-          C_kTurn_P, 0, C_kTurn_D,
+          C_kP_turn, C_kI_turn, C_kD_turn,
+          
           // The motion profile constraints
-          new TrapezoidProfile.Constraints(2, 10)),
-      // This should return the measurement
+          new TrapezoidProfile.Constraints(C_maxVel_turn, C_maxAccel_turn)),
+      
+          // This should return the measurement
       s_dt::getHeading,
       // This should return the goal (can also be a constant)
-      //() -> new TrapezoidProfile.State(degrees, 0),
-      degrees,
+      () -> new TrapezoidProfile.State(degrees, 0),
       // This uses the output
       (output, setpoint) -> {
         // Use the output (and setpoint, if desired) here
-        SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.274, 2.53, 0.165);
+        SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS_turn, C_kV_turn, C_kA_turn);       // kF --> to make PID easier
         s_dt.turnRate(output + feedforward.calculate(setpoint.velocity));
       },
       s_dt

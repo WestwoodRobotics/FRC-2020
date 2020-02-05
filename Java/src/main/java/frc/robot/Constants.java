@@ -15,9 +15,19 @@ public final class Constants{
         
 
         // Turn PID Constants
-        public static double C_kTurn_P = 17.8,
-                                        C_kTurn_D = 6.76;
+        public static double C_kP_turn = 17.8,
+                                    C_kI_turn = 0.0, 
+                                    C_kD_turn = 6.76,
+                                    C_kS_turn = 0.274,
+                                    C_kV_turn = 2.53,
+                                    C_kA_turn = 0.165;
+
+        public static double C_maxVel_turn = 4.743,
+                                    C_maxAccel_turn = 10;
     }
+
+
+
 
     public static final class IntakeConstants{
         public static final int P_SHOOTER_vicSPX_1 = 4;
