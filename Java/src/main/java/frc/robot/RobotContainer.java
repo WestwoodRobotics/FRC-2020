@@ -61,7 +61,7 @@ public class RobotContainer{
     }
 
     public Command getAutonomousCommand(){
-        return a_turn2;
+        return a_turn;
     }
 
     public void resetGyro(){

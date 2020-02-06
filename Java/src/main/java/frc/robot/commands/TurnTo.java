@@ -22,7 +22,7 @@ public class TurnTo extends PIDCommand {
   public TurnTo(double targetAngle, DriveTrain dt) {
     super(
         // The controller that the command will use
-        new PIDController(C_kP_turn , C_kI_turn , C_kD_turn),
+        new PIDController(C_kP_turn, C_kI_turn, C_kD_turn),
         dt::getHeading,          // This should return the measurement
         targetAngle,              // This should return the setpoint (can also be a constant)
         output -> dt.turnRate(output)   // This uses the output
