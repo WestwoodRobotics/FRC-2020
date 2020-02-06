@@ -24,7 +24,6 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
    * Creates a new ProfiledTurnTo.
    */
 
-
   public ProfiledTurnTo(double degrees, DriveTrain s_dt) {
     super(
       // The ProfiledPIDController used by the command

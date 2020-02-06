@@ -11,7 +11,6 @@ import static frc.robot.Constants.DriveConstants.C_kTurn_D;
 import static frc.robot.Constants.DriveConstants.C_kTurn_P;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
 
@@ -22,6 +21,7 @@ public class TurnTo extends PIDCommand {
   /**
    * Creates a new TurnTo.
    */
+
   public TurnTo(double targetAngle, DriveTrain dt) {
     super(
         // The controller that the command will use

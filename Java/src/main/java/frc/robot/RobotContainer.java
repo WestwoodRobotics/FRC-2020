@@ -11,16 +11,16 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.TurnTo;
+import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 
 public class RobotContainer{
     //--------------------------------------------------------------------------------------------------
     // Declare Robot Subsystems
     private final DriveTrain s_driveTrain;
-    //public final BallShooter s_ballShooter;
+    public final BallShooter s_ballShooter;
 
-    private TurnTo turn;
-    private ProfiledTurnTo turn2;
+    
 
     private Joystick leftJoy  = new Joystick(P_OI_JOY_LEFT);            // Declaring Joysticks
     private Joystick rightJoy = new Joystick(P_OI_JOY_RIGHT);
@@ -28,10 +28,9 @@ public class RobotContainer{
     //--------------------------------------------------------------------------------------------------
     // Constructor
     public RobotContainer(){
+        // Initialize Robot Subsystems
         s_driveTrain = new DriveTrain();
-        turn = new TurnTo(90, s_driveTrain);
-        turn2 = new ProfiledTurnTo(90, s_driveTrain);
-        //s_ballShooter = new BallShooter();
+        s_ballShooter = new BallShooter();
 
         //Tank Drive
         s_driveTrain.setDefaultCommand(
@@ -41,7 +40,8 @@ public class RobotContainer{
                 s_driveTrain)
         );
 
-        new RunCommand(() -> s_driveTrain.getHeading());
+
+        //new RunCommand(() -> s_driveTrain.getHeading());
 
         //Configure default commands (for auton choosing), button bindings
         configureButtonBindings();
@@ -55,16 +55,19 @@ public class RobotContainer{
         (new JoystickButton(rightJoy, 3)).whileHeld(() -> SmartDashboard.putNumber("left Encoder: ", s_driveTrain.leftEncoderGet()));
 
         // BallShooter Commands
-        //(new JoystickButton(rightJoy, 3)).whenPressed(() -> s_ballShooter.intakeBall()).whenReleased(() -> s_ballShooter.stopBall());
-        //(new JoystickButton(rightJoy, 4)).whenPressed(() -> s_ballShooter.shootBall()).whenReleased(() -> s_ballShooter.stopBall());
+        (new JoystickButton(rightJoy, 3)).whenPressed(() -> s_ballShooter.intakeBall()).whenReleased(() -> s_ballShooter.stopBall());
+        (new JoystickButton(rightJoy, 4)).whenPressed(() -> s_ballShooter.shootBall()).whenReleased(() -> s_ballShooter.stopBall());
 
     }
 
-    public Command getAutonomousCommand(){
-        return turn2;
-    }
-
-    public void resetGyro(){
-        s_driveTrain.zeroHeading();
+    public Command getAutonomousCommand(String m_autoSelected){
+        switch (m_autoSelected) {
+            case "TurnTo":
+                return new TurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);
+            case "ProfiledTurnTo":
+                return new ProfiledTurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);
+            default:
+                return null;
+        }
     }
 }
