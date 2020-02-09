@@ -7,14 +7,16 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.C_kD_turn;
+import static frc.robot.Constants.DriveConstants.C_kI_turn;
+import static frc.robot.Constants.DriveConstants.C_kP_turn;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -43,9 +45,9 @@ public class Robot extends TimedRobot {
 
     rc = new RobotContainer();
 
-    //SmartDashboard.putNumber("P", 0);
-    //SmartDashboard.putNumber("I", 0);
-    //SmartDashboard.putNumber("D", 0);
+    SmartDashboard.putNumber("P", 0);
+    SmartDashboard.putNumber("I", 0);
+    SmartDashboard.putNumber("D", 0);
   }
 
   /**
@@ -60,9 +62,9 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     
-    //C_kTurn_P = SmartDashboard.getNumber("P", 0.0);
-    //C_kTurn_I = SmartDashboard.getNumber("I", 0.0);
-    //C_kTurn_D = SmartDashboard.getNumber("D", 0.0);
+    C_kP_turn = SmartDashboard.getNumber("P", 0.0);
+    C_kI_turn = SmartDashboard.getNumber("I", 0.0);
+    C_kD_turn = SmartDashboard.getNumber("D", 0.0);
   }
 
   /**
@@ -95,12 +97,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //C_kTurn_P = SmartDashboard.getNumber("P", 0.0);
-    //C_kTurn_I = SmartDashboard.getNumber("I", 0.0);
-    //C_kTurn_D = SmartDashboard.getNumber("D", 0.0);
+    C_kP_turn = SmartDashboard.getNumber("P", 0.0);
+    C_kI_turn = SmartDashboard.getNumber("I", 0.0);
+    C_kD_turn = SmartDashboard.getNumber("D", 0.0);
 
-    //((PIDCommand)rc.getAutonomousCommand()).getController().setPID(C_kTurn_P, C_kTurn_I, C_kTurn_D);
-    
+    ((ProfiledPIDCommand)rc.getAutonomousCommand()).getController().setPID(C_kP_turn, C_kI_turn, C_kD_turn);
 
     /*switch (m_autoSelected) {
       case kCustomAuto:
@@ -115,7 +116,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
+    
   }
 
   /**

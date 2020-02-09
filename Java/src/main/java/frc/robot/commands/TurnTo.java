@@ -7,8 +7,13 @@
 
 package frc.robot.commands;
 
-import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.C_kD_turn;
+import static frc.robot.Constants.DriveConstants.C_kI_turn;
+import static frc.robot.Constants.DriveConstants.C_kP_turn;
+
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
 
@@ -25,15 +30,22 @@ public class TurnTo extends PIDCommand {
         new PIDController(C_kP_turn, C_kI_turn, C_kD_turn),
         dt::getHeading,          // This should return the measurement
         targetAngle,              // This should return the setpoint (can also be a constant)
-        output -> dt.turnRate(output)   // This uses the output
+        output -> {
+          DifferentialDriveWheelSpeeds wheelSpeeds = dt.getKinematics().toWheelSpeeds(new ChassisSpeeds(0, 0, 0));
+          
+          double leftFeedForward = dt.getFeedForward().calculate(wheelSpeeds.leftMetersPerSecond);
+          double rightFeedForward = dt.getFeedForward().calculate(wheelSpeeds.rightMetersPerSecond);
+
+          dt.driveWheels(-output + leftFeedForward, output + rightFeedForward);
+        }   // This uses the output
     );
     
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(dt);
-  
+    
     // Configure additional PID options by calling `getController` here.
     getController().enableContinuousInput(-180, 180);
-    getController().setTolerance(2.5);
+    getController().setTolerance(2);
   }
 
   //--------------------------------------------------------------------------------------------------

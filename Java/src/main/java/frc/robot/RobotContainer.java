@@ -11,13 +11,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.TurnTo;
+import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 
 public class RobotContainer{
     //--------------------------------------------------------------------------------------------------
     // Declare Robot Subsystems
     private final DriveTrain s_driveTrain;
-    //public final BallShooter s_ballShooter;
+    public final BallShooter s_ballShooter;
 
     private TurnTo a_turn;
     private ProfiledTurnTo a_turn2;
@@ -29,6 +30,7 @@ public class RobotContainer{
     // Constructor
     public RobotContainer(){
         s_driveTrain = new DriveTrain();
+        s_ballShooter = new BallShooter();
         a_turn = new TurnTo(90, s_driveTrain);
         a_turn2 = new ProfiledTurnTo(90, s_driveTrain);
         //s_ballShooter = new BallShooter();
@@ -41,7 +43,7 @@ public class RobotContainer{
                 s_driveTrain)
         );
 
-        new RunCommand(() -> s_driveTrain.getHeading());
+        //new RunCommand(() -> s_driveTrain.getHeading());
 
         //Configure default commands (for auton choosing), button bindings
         configureButtonBindings();
@@ -51,17 +53,17 @@ public class RobotContainer{
         //Configure button bindings
         (new JoystickButton(leftJoy, 1)).whenPressed(() -> s_driveTrain.setSlow(true)).whenReleased(() -> s_driveTrain.setSlow(false));
         (new JoystickButton(rightJoy, 1)).whenPressed(() -> s_driveTrain.setSlow(true)).whenReleased(() -> s_driveTrain.setSlow(false));
-
-        (new JoystickButton(rightJoy, 3)).whileHeld(() -> SmartDashboard.putNumber("left Encoder: ", s_driveTrain.leftEncoderGet()));
+        
+        //(new JoystickButton(rightJoy, 3)).whileHeld(() -> SmartDashboard.putNumber("left Encoder: ", s_driveTrain.leftEncoderGet()));
 
         // BallShooter Commands
-        //(new JoystickButton(rightJoy, 3)).whenPressed(() -> s_ballShooter.intakeBall()).whenReleased(() -> s_ballShooter.stopBall());
-        //(new JoystickButton(rightJoy, 4)).whenPressed(() -> s_ballShooter.shootBall()).whenReleased(() -> s_ballShooter.stopBall());
+        (new JoystickButton(rightJoy, 3)).whenPressed(() -> s_ballShooter.intakeBall()).whenReleased(() -> s_ballShooter.stopBall());
+        (new JoystickButton(rightJoy, 4)).whenPressed(() -> s_ballShooter.shootBall()).whenReleased(() -> s_ballShooter.stopBall());
 
     }
 
     public Command getAutonomousCommand(){
-        return a_turn;
+        return a_turn2;
     }
 
     public void resetGyro(){

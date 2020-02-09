@@ -7,6 +7,10 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.DriveConstants.C_TRACK_WIDTH_METERS;
+import static frc.robot.Constants.DriveConstants.C_kA_turn;
+import static frc.robot.Constants.DriveConstants.C_kS_turn;
+import static frc.robot.Constants.DriveConstants.C_kV_turn;
 import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_follow_vicSPX;
 import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_master_vicSPX;
 import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_follow_vicSPX;
@@ -14,8 +18,12 @@ import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_master_vicSPX;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 public class DriveTrain extends SubsystemBase {
   /**
@@ -29,8 +37,18 @@ public class DriveTrain extends SubsystemBase {
 
   private WPI_TalonFX leftFollow  = new WPI_TalonFX(P_DRIVE_LEFT_follow_vicSPX),
                             rightFollow = new WPI_TalonFX(P_DRIVE_RIGHT_follow_vicSPX);
+  
+  /*private WPI_VictorSPX leftMaster  = new WPI_VictorSPX(P_DRIVE_LEFT_master_vicSPX),
+                      rightMaster = new WPI_VictorSPX(P_DRIVE_RIGHT_master_vicSPX);
+
+  private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(P_DRIVE_LEFT_follow_vicSPX),
+                      rightFollow = new WPI_VictorSPX(P_DRIVE_RIGHT_follow_vicSPX);
+  */
 
   private DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
+ 
+  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS_turn, C_kV_turn, C_kA_turn);       // kF --> to make PID easier
+  private DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(C_TRACK_WIDTH_METERS);
   
   private boolean slowMode = false;
 
@@ -46,11 +64,10 @@ public class DriveTrain extends SubsystemBase {
     rightMaster.setInverted(true);
     rightFollow.setInverted(true);
 
-    drive.setMaxOutput(1);
+    //drive.setMaxOutput(0.25);
     
-    
-    //leftFollow.follow(leftMaster);
-    //rightFollow.follow(rightMaster);
+    leftFollow.follow(leftMaster);
+    rightFollow.follow(rightMaster);
 
     //drive.setSafetyEnabled(false);
   }
@@ -59,8 +76,9 @@ public class DriveTrain extends SubsystemBase {
   
   // Drive wheels
   public void driveWheels(double leftSpeed, double rightSpeed){
-    drive.tankDrive(leftSpeed, rightSpeed);
-    //leftMaster.set(0.5);
+    //drive.tankDrive(leftSpeed, rightSpeed);
+    leftMaster.setVoltage(leftSpeed);
+    rightMaster.setVoltage(rightSpeed);
     
   }
 
@@ -80,16 +98,23 @@ public class DriveTrain extends SubsystemBase {
   }
 
   //--------------------------------------------------------------------------------------------------
-  // Gyro / Turning DriveTrain
+  // Turn to Angle
   public double getHeading(){
-    //SmartDashboard.putNumber("gyro", imu.pidGet());
-    return imu.pidGet();
+    return -imu.pidGet();
   }
 
-  // Setting the gyro value to 0
   public void zeroHeading(){
     imu.reset();
   }
+
+  public DifferentialDriveKinematics getKinematics(){
+    return this.kinematics;
+  }
+
+  public SimpleMotorFeedforward getFeedForward(){
+    return this.feedforward;
+  }
+  //--------------------------------------------------------------------------------------------------
 
   public void turnRate(double rt){
     drive.curvatureDrive(0, rt, true);

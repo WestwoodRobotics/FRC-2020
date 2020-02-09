@@ -7,12 +7,24 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.DriveConstants.C_TRACK_WIDTH_METERS;
+import static frc.robot.Constants.DriveConstants.C_kA_turn;
+import static frc.robot.Constants.DriveConstants.C_kD_turn;
+import static frc.robot.Constants.DriveConstants.C_kI_turn;
+import static frc.robot.Constants.DriveConstants.C_kP_turn;
+import static frc.robot.Constants.DriveConstants.C_kS_turn;
+import static frc.robot.Constants.DriveConstants.C_kV_turn;
+import static frc.robot.Constants.DriveConstants.C_maxAccel_turn;
+import static frc.robot.Constants.DriveConstants.C_maxVel_turn;
+
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.subsystems.DriveTrain;
-import static frc.robot.Constants.DriveConstants.*;
 
 
 
@@ -23,7 +35,6 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
   /**
    * Creates a new ProfiledTurnTo.
    */
-
 
   public ProfiledTurnTo(double degrees, DriveTrain s_dt) {
     super(
@@ -37,13 +48,27 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
       
           // This should return the measurement
       s_dt::getHeading,
+      
       // This should return the goal (can also be a constant)
       () -> new TrapezoidProfile.State(degrees, 0),
+      
       // This uses the output
       (output, setpoint) -> {
-        // Use the output (and setpoint, if desired) here
-        SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS_turn, C_kV_turn, C_kA_turn);       // kF --> to make PID easier
-        s_dt.turnRate(output + feedforward.calculate(setpoint.velocity));
+        DifferentialDriveWheelSpeeds wheelSpeeds = s_dt.getKinematics().toWheelSpeeds(new ChassisSpeeds(0, 0, setpoint.velocity));
+        
+        System.out.println(wheelSpeeds.leftMetersPerSecond);
+        System.out.println(wheelSpeeds.rightMetersPerSecond);
+        
+        double leftFeedForward = s_dt.getFeedForward().calculate(wheelSpeeds.leftMetersPerSecond);
+        double rightFeedForward = s_dt.getFeedForward().calculate(wheelSpeeds.rightMetersPerSecond);
+
+        System.out.println("Left Feed Forward: " + leftFeedForward);
+        System.out.println("Right Feed Forward: " + rightFeedForward);
+
+        System.out.println("Intended Left Motor Output: " + (-output + leftFeedForward));
+        System.out.println("Intended Right Motor Output: " + (output + rightFeedForward));
+
+        s_dt.driveWheels(-output - leftFeedForward, output + rightFeedForward);
       },
       s_dt
     );
@@ -52,7 +77,7 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
     addRequirements(s_dt);
 
     this.getController().enableContinuousInput(-180, 180);
-    this.getController().setTolerance(2.5, 10);
+    this.getController().setTolerance(2.5, 2);
   }
 
   // Returns true when the command should end.

@@ -7,10 +7,12 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import static frc.robot.Constants.IntakeConstants.*;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.IntakeConstants.*;
 
 public class BallShooter extends SubsystemBase {
   /**
@@ -19,19 +21,26 @@ public class BallShooter extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   //Variables/Features of ball shooter
-  private WPI_VictorSPX intakeMotor1 = new WPI_VictorSPX(P_SHOOTER_vicSPX_1);
-  private WPI_VictorSPX intakeMotor2 = new WPI_VictorSPX(P_SHOOTER_vicSPX_2);
+  private CANSparkMax intakeMotor1 = new CANSparkMax(P_SHOOTER_spMAX_1, MotorType.kBrushless);
+  private CANSparkMax intakeMotor2 = new CANSparkMax(P_SHOOTER_spMAX_2, MotorType.kBrushless);
 
   // shreyes added code kindly remove at a later date
   //private WPI_VictorSPX intakeMotor3 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_1);
   //private WPI_VictorSPX intakeMotor4 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
   
   private boolean intake;
+  private double speed;
   //--------------------------------------------------------------------------------------------------
   // Constructor
 
   public BallShooter() {
     intake = false;
+    speed = 1;
+
+    intakeMotor1.disable();
+    intakeMotor2.disable();
+
+    intakeMotor2.follow(intakeMotor1, true);
   }
 
   //--------------------------------------------------------------------------------------------------
@@ -40,8 +49,7 @@ public class BallShooter extends SubsystemBase {
   public void intakeBall(){
     if (intake == false){
       intake = true;
-      intakeMotor1.set(1);
-      intakeMotor2.set(1);
+      intakeMotor1.set(speed);
 
       // shreyes added code kindly remove at a later date
       // intakeMotor3.set(1);
@@ -51,8 +59,7 @@ public class BallShooter extends SubsystemBase {
 
   public void shootBall(){
     if(!intake){
-      intakeMotor1.set(-1);
-      intakeMotor2.set(-1);
+      intakeMotor1.set(-speed);
 
       // shreyes added code kindly remove at a later date
       // intakeMotor3.set(-1);
@@ -63,7 +70,6 @@ public class BallShooter extends SubsystemBase {
   public void stopBall(){
     intake = false;
     intakeMotor1.set(0);
-    intakeMotor2.set(0);
 
     // shreyes added code kindly remove at a later date
    // intakeMotor3.set(0);
