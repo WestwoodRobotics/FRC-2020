@@ -24,6 +24,13 @@ public final class Constants{
 
         public static double C_maxVel_turn = 4.743/10,
                                     C_maxAccel_turn = 10/10;
+
+        public static double C_kP_drive = 0.0,
+                                    C_kI_drive = 0.0, 
+                                    C_kD_drive = 0.0,
+                                    C_maxVel_drive = 0.0,
+                                    C_maxAccel_drive = 0.0;
+
     }
 
     public static final class IntakeConstants{

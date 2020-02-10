@@ -95,12 +95,18 @@ public class DriveTrain extends SubsystemBase {
     drive.curvatureDrive(0, rt, true);
   }
 
+  //--------------------------------------------------------------------------------------------------
   public double leftEncoderGet(){
     return leftMaster.getSelectedSensorPosition();
   }
 
   public double rightEncoderGet(){
     return rightMaster.getSelectedSensorPosition();
+  }
+
+
+  public double averageEncoderGet(){
+    return (leftEncoderGet() + rightEncoderGet())/2.0;
   }
 
   //--------------------------------------------------------------------------------------------------

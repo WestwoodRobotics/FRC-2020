@@ -19,17 +19,17 @@ public class TurnTo extends PIDCommand {
   /**
    * Creates a new TurnTo.
    */
-  public TurnTo(double targetAngle, DriveTrain dt) {
+  public TurnTo(double targetAngle, DriveTrain s_dt) {
     super(
         // The controller that the command will use
         new PIDController(C_kP_turn, C_kI_turn, C_kD_turn),
-        dt::getHeading,          // This should return the measurement
-        targetAngle,              // This should return the setpoint (can also be a constant)
-        output -> dt.turnRate(output)   // This uses the output
+        s_dt::getHeading,                 // This should return the measurement
+        targetAngle,                    // This should return the setpoint (can also be a constant)
+        output -> s_dt.turnRate(output)   // This uses the output
     );
     
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(dt);
+    addRequirements(s_dt);
   
     // Configure additional PID options by calling `getController` here.
     getController().enableContinuousInput(-180, 180);

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.DriveTo;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.TurnTo;
@@ -21,6 +22,7 @@ public class RobotContainer{
 
     private TurnTo a_turn;
     private ProfiledTurnTo a_turn2;
+    private DriveTo driveTo;
 
     private Joystick leftJoy  = new Joystick(P_OI_JOY_LEFT);            // Declaring Joysticks
     private Joystick rightJoy = new Joystick(P_OI_JOY_RIGHT);
@@ -61,7 +63,7 @@ public class RobotContainer{
     }
 
     public Command getAutonomousCommand(){
-        return a_turn;
+        return driveTo(5, s_driveTrain);
     }
 
     public void resetGyro(){
