@@ -37,9 +37,6 @@ public class BallShooter extends SubsystemBase {
     intake = false;
     speed = 1;
 
-    intakeMotor1.disable();
-    intakeMotor2.disable();
-
     intakeMotor2.follow(intakeMotor1, true);
   }
 

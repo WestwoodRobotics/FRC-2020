@@ -7,23 +7,17 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.DriveConstants.C_TRACK_WIDTH_METERS;
-import static frc.robot.Constants.DriveConstants.C_kA_turn;
-import static frc.robot.Constants.DriveConstants.C_kS_turn;
-import static frc.robot.Constants.DriveConstants.C_kV_turn;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_follow_vicSPX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_master_vicSPX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_follow_vicSPX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_master_vicSPX;
+import static frc.robot.Constants.DriveConstants.*;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 
 public class DriveTrain extends SubsystemBase {
   /**
@@ -32,22 +26,26 @@ public class DriveTrain extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   //Variables/Features of Drive Train
-  private WPI_TalonFX leftMaster  = new WPI_TalonFX(P_DRIVE_LEFT_master_vicSPX),
-                                    rightMaster = new WPI_TalonFX(P_DRIVE_RIGHT_master_vicSPX);
+  /*private WPI_TalonFX leftMaster  = new WPI_TalonFX(P_DRIVE_LEFT_master_talFX),
+                                    rightMaster = new WPI_TalonFX(P_DRIVE_RIGHT_master_talFX);
 
-  private WPI_TalonFX leftFollow  = new WPI_TalonFX(P_DRIVE_LEFT_follow_vicSPX),
-                            rightFollow = new WPI_TalonFX(P_DRIVE_RIGHT_follow_vicSPX);
-  
-  /*private WPI_VictorSPX leftMaster  = new WPI_VictorSPX(P_DRIVE_LEFT_master_vicSPX),
-                      rightMaster = new WPI_VictorSPX(P_DRIVE_RIGHT_master_vicSPX);
-
-  private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(P_DRIVE_LEFT_follow_vicSPX),
-                      rightFollow = new WPI_VictorSPX(P_DRIVE_RIGHT_follow_vicSPX);
+  private WPI_TalonFX leftFollow  = new WPI_TalonFX(P_DRIVE_LEFT_follow_talFX),
+                            rightFollow = new WPI_TalonFX(P_DRIVE_RIGHT_follow_talFX);
   */
+                            
+  private WPI_VictorSPX leftMaster  = new WPI_VictorSPX(P_DRIVE_LEFT_master_talFX),
+                      rightMaster = new WPI_VictorSPX(P_DRIVE_RIGHT_master_talFX);
+
+  private WPI_VictorSPX leftFollow  = new WPI_VictorSPX(P_DRIVE_LEFT_follow_talFX),
+                      rightFollow = new WPI_VictorSPX(P_DRIVE_RIGHT_follow_talFX);
+  
+
+  private PIDController leftVelPID = new PIDController(C_kP_LEFT, C_kI_LEFT, C_kD_LEFT);
+  private PIDController rightVelPID = new PIDController(C_kP_RIGHT, C_kI_RIGHT, C_kD_RIGHT);
 
   private DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
  
-  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS_turn, C_kV_turn, C_kA_turn);       // kF --> to make PID easier
+  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS, C_kV, C_kA);
   private DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(C_TRACK_WIDTH_METERS);
   
   private boolean slowMode = false;
@@ -63,8 +61,6 @@ public class DriveTrain extends SubsystemBase {
     leftFollow.setInverted(true);
     rightMaster.setInverted(true);
     rightFollow.setInverted(true);
-
-    //drive.setMaxOutput(0.25);
     
     leftFollow.follow(leftMaster);
     rightFollow.follow(rightMaster);
@@ -74,13 +70,42 @@ public class DriveTrain extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   
-  // Drive wheels
-  public void driveWheels(double leftSpeed, double rightSpeed){
-    //drive.tankDrive(leftSpeed, rightSpeed);
-    leftMaster.setVoltage(leftSpeed);
-    rightMaster.setVoltage(rightSpeed);
-    
+  // Drive wheels (percent) [-1.0, 1.0]
+  public void driveWheelsPercent(double leftPercent, double rightPercent){
+    drive.tankDrive(leftPercent, rightPercent);
   }
+
+  public void driveWheelsVolts(double leftVolts, double rightVolts){
+    leftMaster.setVoltage(leftVolts);
+    rightMaster.setVoltage(rightVolts);
+  }
+
+  public void setVelocityPID(double leftMetersPerSec, double rightMetersPerSec){
+    double leftVolts = 0.0;
+    double rightVolts = 0.0;
+
+    DifferentialDriveWheelSpeeds wheelSpeeds = this.getWheelSpeeds();
+
+    leftVolts += feedforward.calculate(leftMetersPerSec);
+    rightVolts += feedforward.calculate(rightMetersPerSec);
+
+    leftVolts += leftVelPID.calculate(wheelSpeeds.leftMetersPerSecond, leftMetersPerSec);
+    rightVolts += rightVelPID.calculate(wheelSpeeds.rightMetersPerSecond, rightMetersPerSec);
+
+    this.driveWheelsVolts(leftVolts, rightVolts);
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds(){
+    return new DifferentialDriveWheelSpeeds(this.ticksToMeters(leftMaster.getSelectedSensorVelocity()) * 10.0, this.ticksToMeters(rightMaster.getSelectedSensorVelocity() * 10.0));
+  }
+
+  public double ticksToMeters(double ticks){
+    double circumference = Math.PI * C_WHEEL_DIAMETER_METERS;
+    double metersPerTick = circumference/C_EPR;
+    return ticks * metersPerTick;
+  }
+
+
 
   //Set slow mode
   public void setSlow(boolean slowMode){
@@ -100,7 +125,7 @@ public class DriveTrain extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Turn to Angle
   public double getHeading(){
-    return -imu.pidGet();
+    return imu.pidGet();
   }
 
   public void zeroHeading(){

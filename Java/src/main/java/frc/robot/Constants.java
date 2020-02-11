@@ -8,22 +8,36 @@ public final class Constants{
     public static final class DriveConstants{
         
         // Motor Controller Ports
-        public static final int P_DRIVE_LEFT_master_vicSPX = 0, //Change to 0 after done testing Falcons
-                                        P_DRIVE_RIGHT_master_vicSPX = 2, //Change to 2 after done testing Falcons
-                                        P_DRIVE_LEFT_follow_vicSPX = 1,
-                                        P_DRIVE_RIGHT_follow_vicSPX = 3;
+        public static final int P_DRIVE_LEFT_master_talFX = 0, //Change to 0 after done testing Falcons
+                                        P_DRIVE_RIGHT_master_talFX = 2, //Change to 2 after done testing Falcons
+                                        P_DRIVE_LEFT_follow_talFX = 1,
+                                        P_DRIVE_RIGHT_follow_talFX = 3;
         
         public static final double C_TRACK_WIDTH_METERS = 0.5207;
-        
+        public static final double C_EPR = 2048;
+        public static final double C_WHEEL_DIAMETER_METERS = 0.1524;
+
+        // Feedforward Constants
+        public static final double C_kS = 0.133,
+                                C_kV = 2.47,
+                                C_kA = 0.178;
+
+        // Left PID Constants
+        public static double C_kP_LEFT = 0.00,
+                                C_kI_LEFT = 0.00,
+                                C_kD_LEFT = 0.00;
+
+        // Right PID Constants
+        public static double C_kP_RIGHT = 0.00,
+                                C_kI_RIGHT = 0.00,
+                                C_kD_RIGHT = 0.00;
+
         // Turn PID Constants
         public static double C_kP_turn = 0.00,
                                     C_kI_turn = 0.00, 
-                                    C_kD_turn = 0.00,
-                                    C_kS_turn = 0.274,
-                                    C_kV_turn = 2.53,
-                                    C_kA_turn = 0.165;
-
-        public static final double C_maxVel_turn = 12/C_kV_turn,
+                                    C_kD_turn = 0.00;
+        
+        public static final double C_maxVel_turn = 12/C_kV,
                                     C_maxAccel_turn = 10;
     }
 

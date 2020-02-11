@@ -7,15 +7,7 @@
 
 package frc.robot.commands;
 
-import static frc.robot.Constants.DriveConstants.C_TRACK_WIDTH_METERS;
-import static frc.robot.Constants.DriveConstants.C_kA_turn;
-import static frc.robot.Constants.DriveConstants.C_kD_turn;
-import static frc.robot.Constants.DriveConstants.C_kI_turn;
-import static frc.robot.Constants.DriveConstants.C_kP_turn;
-import static frc.robot.Constants.DriveConstants.C_kS_turn;
-import static frc.robot.Constants.DriveConstants.C_kV_turn;
-import static frc.robot.Constants.DriveConstants.C_maxAccel_turn;
-import static frc.robot.Constants.DriveConstants.C_maxVel_turn;
+import static frc.robot.Constants.DriveConstants.*;
 
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -54,24 +46,11 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
       
       // This uses the output
       (output, setpoint) -> {
-        DifferentialDriveWheelSpeeds wheelSpeeds = s_dt.getKinematics().toWheelSpeeds(new ChassisSpeeds(0, 0, setpoint.velocity));
-        
-        System.out.println(wheelSpeeds.leftMetersPerSecond);
-        System.out.println(wheelSpeeds.rightMetersPerSecond);
-        
-        double leftFeedForward = s_dt.getFeedForward().calculate(wheelSpeeds.leftMetersPerSecond);
-        double rightFeedForward = s_dt.getFeedForward().calculate(wheelSpeeds.rightMetersPerSecond);
-
-        System.out.println("Left Feed Forward: " + leftFeedForward);
-        System.out.println("Right Feed Forward: " + rightFeedForward);
-
-        System.out.println("Intended Left Motor Output: " + (-output + leftFeedForward));
-        System.out.println("Intended Right Motor Output: " + (output + rightFeedForward));
-
-        s_dt.driveWheels(-output - leftFeedForward, output + rightFeedForward);
+        s_dt.driveWheelsPercent(output, output);
       },
       s_dt
     );
+    
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     addRequirements(s_dt);
