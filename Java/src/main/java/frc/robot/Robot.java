@@ -45,9 +45,9 @@ public class Robot extends TimedRobot {
 
     rc = new RobotContainer();
 
-    SmartDashboard.putNumber("P", 0);
+    /*SmartDashboard.putNumber("P", 0);
     SmartDashboard.putNumber("I", 0);
-    SmartDashboard.putNumber("D", 0);
+    SmartDashboard.putNumber("D", 0);*/
   }
 
   /**
@@ -62,9 +62,9 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     
-    C_kP_turn = SmartDashboard.getNumber("P", 0.0);
+    /*C_kP_turn = SmartDashboard.getNumber("P", 0.0);
     C_kI_turn = SmartDashboard.getNumber("I", 0.0);
-    C_kD_turn = SmartDashboard.getNumber("D", 0.0);
+    C_kD_turn = SmartDashboard.getNumber("D", 0.0);*/
   }
 
   /**
@@ -97,11 +97,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    C_kP_turn = SmartDashboard.getNumber("P", 0.0);
+    /*C_kP_turn = SmartDashboard.getNumber("P", 0.0);
     C_kI_turn = SmartDashboard.getNumber("I", 0.0);
-    C_kD_turn = SmartDashboard.getNumber("D", 0.0);
+    C_kD_turn = SmartDashboard.getNumber("D", 0.0);*/
 
-    ((ProfiledPIDCommand)rc.getAutonomousCommand()).getController().setPID(C_kP_turn, C_kI_turn, C_kD_turn);
+    //((ProfiledPIDCommand)rc.getAutonomousCommand()).getController().setPID(C_kP_turn, C_kI_turn, C_kD_turn);
 
     /*switch (m_autoSelected) {
       case kCustomAuto:

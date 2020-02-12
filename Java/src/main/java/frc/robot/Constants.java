@@ -17,10 +17,14 @@ public final class Constants{
         public static final double C_EPR = 2048;
         public static final double C_WHEEL_DIAMETER_METERS = 0.1524;
 
-        // Feedforward Constants
-        public static final double C_kS = 0.133,
-                                C_kV = 2.47,
-                                C_kA = 0.178;
+        // Left Feedforward Constants
+        public static final double C_kS_LEFT = 0.122,
+                                C_kV_LEFT = 2.48,
+                                C_kA_LEFT = 0.179;
+
+        public static final double C_kS_RIGHT = 0.117,
+                                C_kV_RIGHT = 2.48,
+                                C_kA_RIGHT = 0.177;
 
         // Left PID Constants
         public static double C_kP_LEFT = 0.00,
@@ -37,7 +41,7 @@ public final class Constants{
                                     C_kI_turn = 0.00, 
                                     C_kD_turn = 0.00;
         
-        public static final double C_maxVel_turn = 12/C_kV,
+        public static final double C_maxVel_turn = 12/C_kV_LEFT,
                                     C_maxAccel_turn = 10;
     }
 

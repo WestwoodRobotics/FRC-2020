@@ -4,7 +4,6 @@ import static frc.robot.Constants.JoyConstants.P_OI_JOY_LEFT;
 import static frc.robot.Constants.JoyConstants.P_OI_JOY_RIGHT;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -60,7 +59,7 @@ public class RobotContainer{
     }
 
     public Command getAutonomousCommand(){
-        return null;
+        return new RunCommand(() -> s_driveTrain.setVelocityPID(2.0, 2.0), s_driveTrain);
     }
 
     public void resetGyro(){
