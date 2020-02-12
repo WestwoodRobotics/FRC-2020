@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.TankDrive;
-import frc.robot.commands.TurnTo;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 
@@ -62,8 +61,8 @@ public class RobotContainer{
 
     public Command getAutonomousCommand(String m_autoSelected){
         switch (m_autoSelected) {
-            case "TurnTo":
-                return new TurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);
+            /*case "TurnTo":
+                return new TurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);*/
             case "ProfiledTurnTo":
                 return new ProfiledTurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);
             default:
