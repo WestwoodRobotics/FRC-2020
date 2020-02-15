@@ -14,25 +14,21 @@ public final class Constants{
                                         P_DRIVE_RIGHT_follow_talFX = 3;
         
         public static final double C_TRACK_WIDTH_METERS = 0.5207;
-        public static final double C_EPR = 2048;
+        public static final double C_EPR = 22016;
         public static final double C_WHEEL_DIAMETER_METERS = 0.1524;
 
         // Left Feedforward Constants
-        public static final double C_kS_LEFT = 0.122,
-                                C_kV_LEFT = 2.48,
-                                C_kA_LEFT = 0.179;
-
-        public static final double C_kS_RIGHT = 0.117,
-                                C_kV_RIGHT = 2.48,
-                                C_kA_RIGHT = 0.177;
+        public static final double C_kS = 0.133,
+                                C_kV = 2.47,
+                                C_kA = 0.178;
 
         // Left PID Constants
-        public static double C_kP_LEFT = 0.00,
+        public static double C_kP_LEFT = 3.50,
                                 C_kI_LEFT = 0.00,
                                 C_kD_LEFT = 0.00;
 
         // Right PID Constants
-        public static double C_kP_RIGHT = 0.00,
+        public static double C_kP_RIGHT = 3.53,
                                 C_kI_RIGHT = 0.00,
                                 C_kD_RIGHT = 0.00;
 
@@ -41,7 +37,7 @@ public final class Constants{
                                     C_kI_turn = 0.00, 
                                     C_kD_turn = 0.00;
         
-        public static final double C_maxVel_turn = 12/C_kV_LEFT,
+        public static final double C_maxVel_turn = 12/C_kV,
                                     C_maxAccel_turn = 10;
     }
 

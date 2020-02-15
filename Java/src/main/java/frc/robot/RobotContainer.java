@@ -59,7 +59,7 @@ public class RobotContainer{
     }
 
     public Command getAutonomousCommand(){
-        return new RunCommand(() -> s_driveTrain.setVelocityPID(2.0, 2.0), s_driveTrain);
+        return new RunCommand(() -> s_driveTrain.setVelocityPID(1.0, 1.0), s_driveTrain);
     }
 
     public void resetGyro(){

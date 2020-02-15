@@ -7,22 +7,7 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.DriveConstants.C_EPR;
-import static frc.robot.Constants.DriveConstants.C_TRACK_WIDTH_METERS;
-import static frc.robot.Constants.DriveConstants.C_WHEEL_DIAMETER_METERS;
-import static frc.robot.Constants.DriveConstants.C_kA_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kD_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kD_RIGHT;
-import static frc.robot.Constants.DriveConstants.C_kI_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kI_RIGHT;
-import static frc.robot.Constants.DriveConstants.C_kP_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kP_RIGHT;
-import static frc.robot.Constants.DriveConstants.C_kS_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kV_LEFT;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_follow_talFX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_master_talFX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_follow_talFX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_master_talFX;
+import static frc.robot.Constants.DriveConstants.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
@@ -32,6 +17,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrain extends SubsystemBase {
@@ -60,8 +46,7 @@ public class DriveTrain extends SubsystemBase {
 
   private DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
  
-  private SimpleMotorFeedforward leftFF = new SimpleMotorFeedforward(C_kS_LEFT, C_kV_LEFT, C_kA_LEFT);
-  private SimpleMotorFeedforward rightFF = new SimpleMotorFeedforward(C_kS_LEFT, C_kV_LEFT, C_kA_LEFT);
+  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS, C_kV, C_kA);
   private DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(C_TRACK_WIDTH_METERS);
   
   private boolean slowMode = false;
@@ -73,10 +58,10 @@ public class DriveTrain extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public DriveTrain() {
-    leftMaster.setInverted(true);
-    leftFollow.setInverted(true);
-    //rightMaster.setInverted(true);
-    //rightFollow.setInverted(true);
+    //leftMaster.setInverted(true);
+    //leftFollow.setInverted(true);
+    rightMaster.setInverted(true);
+    rightFollow.setInverted(true);
     
     leftFollow.follow(leftMaster);
     rightFollow.follow(rightMaster);
@@ -100,33 +85,29 @@ public class DriveTrain extends SubsystemBase {
     double leftVolts = 0.0;
     double rightVolts = 0.0;
 
-    //DifferentialDriveWheelSpeeds wheelSpeeds = this.getWheelSpeeds();
+    DifferentialDriveWheelSpeeds wheelSpeeds = this.getWheelSpeeds();
 
-    leftVolts += leftFF.calculate(leftMetersPerSec);
-    rightVolts += rightFF.calculate(rightMetersPerSec);
+    leftVolts += feedforward.calculate(leftMetersPerSec);
+    rightVolts += feedforward.calculate(rightMetersPerSec);
+
+    SmartDashboard.putNumber("left speed", wheelSpeeds.leftMetersPerSecond);
+    SmartDashboard.putNumber("right speed", wheelSpeeds.rightMetersPerSecond);
+
+    leftVolts += leftVelPID.calculate(wheelSpeeds.leftMetersPerSecond, leftMetersPerSec);
+    rightVolts += rightVelPID.calculate(wheelSpeeds.rightMetersPerSecond, rightMetersPerSec);
 
     System.out.println(leftVolts + ", " + rightVolts);
-    System.out.println(leftVolts + ", " + rightVolts);
-    System.out.println(leftVolts + ", " + rightVolts);
-    System.out.println(leftVolts + ", " + rightVolts);
-    System.out.println(leftVolts + ", " + rightVolts);
-    System.out.println(leftVolts + ", " + rightVolts);
-    System.out.println(leftVolts + ", " + rightVolts);
-
-    //leftVolts += leftVelPID.calculate(wheelSpeeds.leftMetersPerSecond, leftMetersPerSec);
-    //rightVolts += rightVelPID.calculate(wheelSpeeds.rightMetersPerSecond, rightMetersPerSec);
 
     this.driveWheelsVolts(leftVolts, rightVolts);
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds(){
-    return new DifferentialDriveWheelSpeeds(this.ticksToMeters(leftMaster.getSelectedSensorVelocity()) * 10.0, this.ticksToMeters(rightMaster.getSelectedSensorVelocity() * 10.0));
+    return new DifferentialDriveWheelSpeeds(this.falconVelToMetersPerSec(leftMaster.getSelectedSensorVelocity()), this.falconVelToMetersPerSec(rightMaster.getSelectedSensorVelocity()));
   }
 
-  public double ticksToMeters(double ticks){
-    double circumference = Math.PI * C_WHEEL_DIAMETER_METERS;
-    double metersPerTick = circumference/C_EPR;
-    return ticks * metersPerTick;
+  public double falconVelToMetersPerSec(double ticksPerDecasec){
+    double metersPerSec = ticksPerDecasec*10.0*Math.PI*C_WHEEL_DIAMETER_METERS/C_EPR;
+    return metersPerSec;
   }
 
 
@@ -161,15 +142,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public SimpleMotorFeedforward getFeedForward(String leftOrRight){
-    if(leftOrRight == "left"){
-      return leftFF;
-    }
-    else if(leftOrRight == "right"){
-      return rightFF;
-    }
-    else{
-      return null;
-    }
+    return feedforward;
   }
   //--------------------------------------------------------------------------------------------------
 
