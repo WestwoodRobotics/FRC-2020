@@ -1,0 +1,129 @@
+{
+    "cameras": [
+        {
+            "brightness": 0,
+            "fps": 30,
+            "height": 240,
+            "name": "PS3 Eyecam",
+            "path": "/dev/v4l/by-id/usb-OmniVision_Technologies__Inc._USB_Camera-B4.09.24.1-video-index0",
+            "pixel format": "yuyv",
+            "properties": [
+                {
+                    "name": "connect_verbose",
+                    "value": 1
+                },
+                {
+                    "name": "contrast",
+                    "value": 12
+                },
+                {
+                    "name": "saturation",
+                    "value": 25
+                },
+                {
+                    "name": "hue",
+                    "value": 50
+                },
+                {
+                    "name": "white_balance_automatic",
+                    "value": true
+                },
+                {
+                    "name": "exposure",
+                    "value": 120
+                },
+                {
+                    "name": "gain_automatic",
+                    "value": true
+                },
+                {
+                    "name": "gain",
+                    "value": 31
+                },
+                {
+                    "name": "horizontal_flip",
+                    "value": false
+                },
+                {
+                    "name": "vertical_flip",
+                    "value": false
+                },
+                {
+                    "name": "power_line_frequency",
+                    "value": 0
+                },
+                {
+                    "name": "sharpness",
+                    "value": 0
+                },
+                {
+                    "name": "auto_exposure",
+                    "value": 0
+                }
+            ],
+            "stream": {
+                "properties": []
+            },
+            "width": 320
+        },
+        {
+            "brightness": 50,
+            "exposure": "auto",
+            "fps": 100,
+            "height": 480,
+            "name": "Elp Camera",
+            "path": "/dev/video0",
+            "pixel format": "mjpeg",
+            "properties": [
+                {
+                    "name": "connect_verbose",
+                    "value": 1
+                },
+                {
+                    "name": "contrast",
+                    "value": 50
+                },
+                {
+                    "name": "saturation",
+                    "value": 46
+                },
+                {
+                    "name": "hue",
+                    "value": 50
+                },
+                {
+                    "name": "gamma",
+                    "value": 100
+                },
+                {
+                    "name": "gain",
+                    "value": 0
+                },
+                {
+                    "name": "power_line_frequency",
+                    "value": 1
+                },
+                {
+                    "name": "sharpness",
+                    "value": 33
+                },
+                {
+                    "name": "backlight_compensation",
+                    "value": 1
+                },
+                {
+                    "name": "exposure_auto_priority",
+                    "value": true
+                }
+            ],
+            "stream": {
+                "properties": []
+            },
+            "white balance": "auto",
+            "width": 640
+        }
+    ],
+    "ntmode": "client",
+    "switched cameras": [],
+    "team": 2583
+}

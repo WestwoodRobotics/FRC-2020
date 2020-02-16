@@ -96,7 +96,7 @@ public class DriveTrain extends SubsystemBase {
     leftVolts += leftVelPID.calculate(wheelSpeeds.leftMetersPerSecond, leftMetersPerSec);
     rightVolts += rightVelPID.calculate(wheelSpeeds.rightMetersPerSecond, rightMetersPerSec);
 
-    System.out.println(leftVolts + ", " + rightVolts);
+    //System.out.println(leftVolts + ", " + rightVolts);
 
     this.driveWheelsVolts(leftVolts, rightVolts);
   }
@@ -105,12 +105,34 @@ public class DriveTrain extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(this.falconVelToMetersPerSec(leftMaster.getSelectedSensorVelocity()), this.falconVelToMetersPerSec(rightMaster.getSelectedSensorVelocity()));
   }
 
+  public double leftEncoderGetTicks(){
+    return leftMaster.getSelectedSensorPosition();
+  }
+
+  public double rightEncoderGetTicks(){
+    return rightMaster.getSelectedSensorPosition();
+  }
+
+  public double getAverageEncoderTicks(){
+    return (leftEncoderGetTicks() + rightEncoderGetTicks())/2.0;
+  }
+
+  public void zeroLeftEncoder(){
+    leftMaster.setSelectedSensorPosition(0);
+  }
+
+  public void zeroRightEncoder(){
+    leftMaster.setSelectedSensorPosition(0);
+  }
+
   public double falconVelToMetersPerSec(double ticksPerDecasec){
     double metersPerSec = ticksPerDecasec*10.0*Math.PI*C_WHEEL_DIAMETER_METERS/C_EPR;
     return metersPerSec;
   }
 
-
+  public double ticksToMeters(double ticks){
+    return ticks*Math.PI*C_WHEEL_DIAMETER_METERS/C_EPR;
+  }
 
   //Set slow mode
   public void setSlow(boolean slowMode){
@@ -148,14 +170,6 @@ public class DriveTrain extends SubsystemBase {
 
   public void turnRate(double rt){
     drive.curvatureDrive(0, rt, true);
-  }
-
-  public double leftEncoderGet(){
-    return leftMaster.getSelectedSensorPosition();
-  }
-
-  public double rightEncoderGet(){
-    return rightMaster.getSelectedSensorPosition();
   }
 
   //--------------------------------------------------------------------------------------------------

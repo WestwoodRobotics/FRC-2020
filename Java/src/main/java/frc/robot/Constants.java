@@ -33,6 +33,12 @@ public final class Constants{
                                 C_kD_RIGHT = 0.00;
 
         // Turn PID Constants
+        public static double C_kP_dist = 0.00,
+                                    C_kI_dist = 0.00, 
+                                    C_kD_dist = 0.00;
+
+
+        // Turn PID Constants
         public static double C_kP_turn = 0.00,
                                     C_kI_turn = 0.00, 
                                     C_kD_turn = 0.00;
