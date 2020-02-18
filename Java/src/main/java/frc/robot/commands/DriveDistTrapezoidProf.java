@@ -31,8 +31,14 @@ public class DriveDistTrapezoidProf extends TrapezoidProfileCommand {
         state -> {
           // Use current trajectory state here
           //System.out.println("Pos: " + state.position);
-          System.out.println("Vel: " + state.velocity);
-          //s_driveTrain.setVelocityPID(state.velocity, state.velocity);
+          if(state.velocity > 1){
+            System.out.println("Vel: " + 1);
+            s_driveTrain.setVelocityPID(1, 1);
+          }
+          else{
+            System.out.println("Vel: " + state.velocity);
+            s_driveTrain.setVelocityPID(state.velocity, state.velocity);
+          }
         }
     );
 

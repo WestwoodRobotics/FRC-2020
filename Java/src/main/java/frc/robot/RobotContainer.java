@@ -4,11 +4,12 @@ import static frc.robot.Constants.JoyConstants.P_OI_JOY_LEFT;
 import static frc.robot.Constants.JoyConstants.P_OI_JOY_RIGHT;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.TankDrive;
-import frc.robot.commands.DriveDistTrapezoidProf;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 
@@ -20,8 +21,8 @@ public class RobotContainer{
 
     private ProfiledTurnTo a_turn2;
 
-    private Joystick rightJoy  = new Joystick(P_OI_JOY_RIGHT);            // Declaring Joysticks
     private Joystick leftJoy = new Joystick(P_OI_JOY_LEFT);
+    private Joystick rightJoy  = new Joystick(P_OI_JOY_RIGHT);            // Declaring Joysticks
 
     //--------------------------------------------------------------------------------------------------
     // Constructor
@@ -34,8 +35,8 @@ public class RobotContainer{
         //Tank Drive
         s_driveTrain.setDefaultCommand(
             new TankDrive(
-                () -> -rightJoy.getY(), 
-                () -> leftJoy.getY(), 
+                () -> -leftJoy.getY(), 
+                () -> rightJoy.getY(), 
                 s_driveTrain)
         );
 
@@ -52,8 +53,6 @@ public class RobotContainer{
         //Configure button bindings
         (new JoystickButton(rightJoy, 1)).whenPressed(() -> s_driveTrain.setSlow(true)).whenReleased(() -> s_driveTrain.setSlow(false));
         (new JoystickButton(leftJoy, 1)).whenPressed(() -> s_driveTrain.setSlow(true)).whenReleased(() -> s_driveTrain.setSlow(false));
-        
-        //(new JoystickButton(rightJoy, 3)).whileHeld(() -> SmartDashboard.putNumber("left Encoder: ", s_driveTrain.leftEncoderGet()));
 
         // BallShooter Commands
         (new JoystickButton(leftJoy, 3)).whenPressed(() -> s_ballShooter.intakeBall()).whenReleased(() -> s_ballShooter.stopBall());
@@ -62,10 +61,9 @@ public class RobotContainer{
     }
 
     public Command getAutonomousCommand(){
-        return new DriveDistTrapezoidProf(10.0, s_driveTrain);
-    }
-
-    public void resetGyro(){
         s_driveTrain.zeroHeading();
+        s_driveTrain.resetOdometry(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
+
+        return s_driveTrain.getTrajectoryCommand();
     }
 }

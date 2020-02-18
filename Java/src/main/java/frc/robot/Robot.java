@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -84,12 +85,11 @@ public class Robot extends TimedRobot {
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     //System.out.println("Auto selected: " + m_autoSelected);
     Command m_auto = rc.getAutonomousCommand();
+    System.out.println(m_auto instanceof RamseteCommand);
 
     if(m_auto != null){
       m_auto.schedule();
     }
-
-    rc.resetGyro();
   }
 
   /**
