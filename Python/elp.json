@@ -1,0 +1,56 @@
+{
+            "brightness": 50,
+            "exposure": "auto",
+            "fps": 100,
+            "height": 480,
+            "name": "Elp Camera",
+            "path": "/dev/video0",
+            "pixel format": "mjpeg",
+            "properties": [
+                {
+                    "name": "connect_verbose",
+                    "value": 1
+                },
+                {
+                    "name": "contrast",
+                    "value": 50
+                },
+                {
+                    "name": "saturation",
+                    "value": 46
+                },
+                {
+                    "name": "hue",
+                    "value": 50
+                },
+                {
+                    "name": "gamma",
+                    "value": 100
+                },
+                {
+                    "name": "gain",
+                    "value": 0
+                },
+                {
+                    "name": "power_line_frequency",
+                    "value": 1
+                },
+                {
+                    "name": "sharpness",
+                    "value": 33
+                },
+                {
+                    "name": "backlight_compensation",
+                    "value": 1
+                },
+                {
+                    "name": "exposure_auto_priority",
+                    "value": true
+                }
+            ],
+            "stream": {
+                "properties": []
+            },
+            "white balance": "auto",
+            "width": 640
+        }

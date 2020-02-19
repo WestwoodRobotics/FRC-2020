@@ -135,7 +135,7 @@ def startCamera(config):
         server.setConfigJson(json.dumps(config.streamConfig))
 
     cvSink = inst.getVideo()
-    cvSrc = inst.putVideo(config.name + " asdfasdfasdfVision", 160, 120) #Change to get values from config file
+    cvSrc = inst.putVideo(config.name + " Vision", 160, 120) #Change to get values from config file
 
     return camera, cvSink, cvSrc
 

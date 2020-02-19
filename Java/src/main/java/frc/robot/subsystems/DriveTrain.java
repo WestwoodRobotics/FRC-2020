@@ -39,7 +39,6 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
@@ -52,6 +51,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ProfiledTurnTo;
 
 public class DriveTrain extends SubsystemBase {
   /**
@@ -104,7 +104,7 @@ public class DriveTrain extends SubsystemBase {
     leftFollow.follow(leftMaster);
     rightFollow.follow(rightMaster);
     
-    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(this.getHeading()));
+    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(this.getHeadingDegrees()));
     this.resetOdometry(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
 
     drive.setSafetyEnabled(true);
@@ -120,7 +120,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Left Encoder", this.leftEncoderGetMeters());
     SmartDashboard.putNumber("Right Encoder", this.rightEncoderGetMeters());
 
-    odometry.update(Rotation2d.fromDegrees(this.getHeading()), this.leftEncoderGetMeters(), this.rightEncoderGetMeters());
+    odometry.update(Rotation2d.fromDegrees(this.getHeadingDegrees()), this.leftEncoderGetMeters(), this.rightEncoderGetMeters());
   }
 
   //--------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ public class DriveTrain extends SubsystemBase {
     zeroLeftEncoder();
     zeroRightEncoder();
 
-    odometry.resetPosition(pose, Rotation2d.fromDegrees(this.getHeading()));
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(this.getHeadingDegrees()));
   }
 
   public Command getTrajectoryCommand(){
@@ -217,8 +217,12 @@ public class DriveTrain extends SubsystemBase {
   }
 
   //--------------------------------------------------------------------------------------------------
-  public double getHeading(){
+  public double getHeadingDegrees(){
     return -imu.pidGet();
+  }
+
+  public double getHeadingRadians(){
+    return Math.toRadians(this.getHeadingDegrees());
   }
 
   public double getTurnRate(){

@@ -28,7 +28,7 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
    * Creates a new ProfiledTurnTo.
    */
 
-  public ProfiledTurnTo(double degrees, DriveTrain s_dt) {
+  public ProfiledTurnTo(double degrees, DriveTrain s_driveTrain) {
     super(
       // The ProfiledPIDController used by the command
       new ProfiledPIDController(
@@ -39,24 +39,32 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
           new TrapezoidProfile.Constraints(C_maxVel_turn, C_maxAccel_turn)),
       
           // This should return the measurement
-      s_dt::getHeading,
+      s_driveTrain::getHeadingRadians,
       
       // This should return the goal (can also be a constant)
-      () -> new TrapezoidProfile.State(degrees, 0),
+      () -> new TrapezoidProfile.State(Math.toRadians(degrees), 0),
       
       // This uses the output
       (output, setpoint) -> {
-        s_dt.driveWheelsPercent(output, output);
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0, 0, setpoint.velocity + output);
+        DifferentialDriveWheelSpeeds wheelSpeeds = s_driveTrain.getKinematics().toWheelSpeeds(chassisSpeeds);
+
+        System.out.println(chassisSpeeds.omegaRadiansPerSecond);
+
+        s_driveTrain.setVelocityPID(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
       },
-      s_dt
+
+      s_driveTrain
     );
     
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
-    addRequirements(s_dt);
+    addRequirements(s_driveTrain);
 
-    this.getController().enableContinuousInput(-180, 180);
-    this.getController().setTolerance(2.5, 2);
+    this.getController().enableContinuousInput(-Math.PI, Math.PI);
+    this.getController().setTolerance(Math.toRadians(0.5), 0.2); // Velocity tolerance NOT IN M/S, but in radians/s
+
+
   }
 
   // Returns true when the command should end.

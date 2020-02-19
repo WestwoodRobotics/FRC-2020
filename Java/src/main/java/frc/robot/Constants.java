@@ -40,16 +40,17 @@ public final class Constants{
 
 
         // Turn PID Constants
-        public static double C_kP_turn = 0.00,
+        public static double C_kP_turn = 13,
                                     C_kI_turn = 0.00, 
                                     C_kD_turn = 0.00;
         
-        public static final double C_maxVel_turn = 12/C_kV,
-                                    C_maxAccel_turn = 10;
+        // Radians per second
+        public static final double C_maxVel_turn = 7.28,
+                                    C_maxAccel_turn = 7.28;
 
         // Trajectory Constants
-        public static final double C_maxVel = 0.5,
-                                    C_maxAccel = 0.5;
+        public static final double C_maxVel = 1.5,
+                                    C_maxAccel = 1;
 
         public static final double C_kB_RAMSETE = 2.0,
                                     C_kZeta_RAMSETE = 0.7;
