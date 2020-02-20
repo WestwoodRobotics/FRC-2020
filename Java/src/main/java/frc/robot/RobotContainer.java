@@ -65,6 +65,6 @@ public class RobotContainer{
         s_driveTrain.resetOdometry(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
 
         //return a_turn2;
-        return s_driveTrain.getTrajectoryCommand();
+        return s_driveTrain.getTrajectoryCommand().andThen(new ProfiledTurnTo(90, s_driveTrain));
     }
 }

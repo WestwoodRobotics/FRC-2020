@@ -7,26 +7,7 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.DriveConstants.C_EPR;
-import static frc.robot.Constants.DriveConstants.C_TRACK_WIDTH_METERS;
-import static frc.robot.Constants.DriveConstants.C_WHEEL_DIAMETER_METERS;
-import static frc.robot.Constants.DriveConstants.C_kA;
-import static frc.robot.Constants.DriveConstants.C_kB_RAMSETE;
-import static frc.robot.Constants.DriveConstants.C_kD_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kD_RIGHT;
-import static frc.robot.Constants.DriveConstants.C_kI_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kI_RIGHT;
-import static frc.robot.Constants.DriveConstants.C_kP_LEFT;
-import static frc.robot.Constants.DriveConstants.C_kP_RIGHT;
-import static frc.robot.Constants.DriveConstants.C_kS;
-import static frc.robot.Constants.DriveConstants.C_kV;
-import static frc.robot.Constants.DriveConstants.C_kZeta_RAMSETE;
-import static frc.robot.Constants.DriveConstants.C_maxAccel;
-import static frc.robot.Constants.DriveConstants.C_maxVel;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_follow_talFX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_master_talFX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_follow_talFX;
-import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_master_talFX;
+import static frc.robot.Constants.DriveConstants.*;
 
 import java.util.List;
 
@@ -158,10 +139,6 @@ public class DriveTrain extends SubsystemBase {
     return metersPerSec;
   }
 
-  public double ticksToMeters(double ticks){
-    return ticks*Math.PI*C_WHEEL_DIAMETER_METERS/C_EPR;
-  }
-
   //Set slow mode
   public void setSlow(boolean slowMode){
     this.slowMode = slowMode;
@@ -204,9 +181,12 @@ public class DriveTrain extends SubsystemBase {
       new Pose2d(0.0, 0.0, new Rotation2d(0.0)), 
       List.of(
         new Translation2d(1.0, 0.0),
-        new Translation2d(1.0, -1.0)
+        new Translation2d(2.0, 0.0),
+        new Translation2d(2.0, -1.0),
+        new Translation2d(1.0, -1.0),
+        new Translation2d(1.0, -2.0)
       ), 
-      new Pose2d(2.0, -1.0, new Rotation2d(0.0)),
+      new Pose2d(2.0, -2.0, new Rotation2d(90.0)),
       config
     );
     
@@ -238,11 +218,11 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double leftEncoderGetMeters(){
-    return this.ticksToMeters(this.leftEncoderGetTicks());
+    return ticksToMeters(this.leftEncoderGetTicks());
   }
 
   public double rightEncoderGetMeters(){
-    return this.ticksToMeters(this.rightEncoderGetTicks());
+    return ticksToMeters(this.rightEncoderGetTicks());
   }
 
   public double getAverageEncoderTicks(){

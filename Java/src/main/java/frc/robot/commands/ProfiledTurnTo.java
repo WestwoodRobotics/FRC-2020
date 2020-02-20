@@ -32,13 +32,13 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
     super(
       // The ProfiledPIDController used by the command
       new ProfiledPIDController(
-          // The PID gains
-          C_kP_turn, C_kI_turn, C_kD_turn,
-          
-          // The motion profile constraints
-          new TrapezoidProfile.Constraints(C_maxVel_turn, C_maxAccel_turn)),
-      
-          // This should return the measurement
+        // The PID gains
+        C_kP_turn, C_kI_turn, C_kD_turn,
+        
+        // The motion profile constraints
+        new TrapezoidProfile.Constraints(radiansToMeters(C_maxVel_turn), radiansToMeters(C_maxAccel_turn))),
+    
+      // This should return the measurement
       s_driveTrain::getHeadingRadians,
       
       // This should return the goal (can also be a constant)
@@ -46,15 +46,14 @@ public class ProfiledTurnTo extends ProfiledPIDCommand {
       
       // This uses the output
       (output, setpoint) -> {
+
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0, 0, setpoint.velocity + output);
         DifferentialDriveWheelSpeeds wheelSpeeds = s_driveTrain.getKinematics().toWheelSpeeds(chassisSpeeds);
 
         System.out.println(chassisSpeeds.omegaRadiansPerSecond);
 
         s_driveTrain.setVelocityPID(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
-      },
-
-      s_driveTrain
+      }
     );
     
     // Use addRequirements() here to declare subsystem dependencies.

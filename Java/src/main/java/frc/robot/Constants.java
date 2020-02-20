@@ -34,10 +34,9 @@ public final class Constants{
                                 C_kD_RIGHT = 0.00;
 
         // Drive Distance PID Constants
-        public static double C_kP_DIST = 0.00,
+        public static double C_kP_DIST = 0.9,
                                     C_kI_DIST = 0.00, 
                                     C_kD_DIST = 0.00;
-
 
         // Turn PID Constants
         public static double C_kP_turn = 13,
@@ -45,15 +44,27 @@ public final class Constants{
                                     C_kD_turn = 0.00;
         
         // Radians per second
-        public static final double C_maxVel_turn = 7.28,
-                                    C_maxAccel_turn = 7.28;
+        public static final double C_maxVel_turn = 1,
+                                    C_maxAccel_turn = 1;
 
         // Trajectory Constants
-        public static final double C_maxVel = 1.5,
-                                    C_maxAccel = 1;
+        public static final double C_maxVel = 2,
+                                    C_maxAccel = 2;
 
         public static final double C_kB_RAMSETE = 2.0,
                                     C_kZeta_RAMSETE = 0.7;
+        
+        public static double ticksToMeters(double ticks){
+            return ticks*Math.PI*C_WHEEL_DIAMETER_METERS/C_EPR;
+        }
+    
+        public static double radiansToMeters(double radians){
+            return C_TRACK_WIDTH_METERS/2 * radians;
+        }
+    
+        public static double metersToRadians(double meters){
+            return meters * 2/C_TRACK_WIDTH_METERS;
+        }
         
     }
 
