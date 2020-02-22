@@ -1,13 +1,59 @@
-import cv2
-import numpy as np
+#!/usr/bin/env python3
+#----------------------------------------------------------------------------
+# Copyright (c) 2018 FIRST. All Rights Reserved.
+# Open Source Software - may be modified and shared by FRC teams. The code
+# must be accompanied by the FIRST BSD license file in the root directory of
+# the project.
+#----------------------------------------------------------------------------
 
 import json
 import time
 import sys
 
-from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, CvSink, CvSource, VideoMode
-from networktables import NetworkTables, NetworkTablesInstance
+from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
+from networktables import NetworkTablesInstance
 import ntcore
+
+#   JSON format:
+#   {
+#       "team": <team number>,
+#       "ntmode": <"client" or "server", "client" if unspecified>
+#       "cameras": [
+#           {
+#               "name": <camera name>
+#               "path": <path, e.g. "/dev/video0">
+#               "pixel format": <"MJPEG", "YUYV", etc>   // optional
+#               "width": <video mode width>              // optional
+#               "height": <video mode height>            // optional
+#               "fps": <video mode fps>                  // optional
+#               "brightness": <percentage brightness>    // optional
+#               "white balance": <"auto", "hold", value> // optional
+#               "exposure": <"auto", "hold", value>      // optional
+#               "properties": [                          // optional
+#                   {
+#                       "name": <property name>
+#                       "value": <property value>
+#                   }
+#               ],
+#               "stream": {                              // optional
+#                   "properties": [
+#                       {
+#                           "name": <stream property name>
+#                           "value": <stream property value>
+#                       }
+#                   ]
+#               }
+#           }
+#       ]
+#       "switched cameras": [
+#           {
+#               "name": <virtual camera name>
+#               "key": <network table key used for selection>
+#               // if NT value is a string, it's treated as a name
+#               // if NT value is a double, it's treated as an integer index
+#           }
+#       ]
+#   }
 
 configFile = "/boot/frc.json"
 
@@ -16,57 +62,62 @@ class CameraConfig: pass
 team = None
 server = False
 cameraConfigs = []
-switchedCameraConfigs = [] #When you only want to stream one camera at a time
+switchedCameraConfigs = []
 cameras = []
 
-sd = NetworkTables.getTable('SmartDashboard')
-
-#Reports a parse error to pi4 console
 def parseError(str):
+    """Report parse error."""
     print("config error in '" + configFile + "': " + str, file=sys.stderr)
 
-#Reads camera's configuration and adds camera to cameraConfigs[]
-def readCameraConfig(config, switched):
+def readCameraConfig(config):
+    """Read single camera configuration."""
     cam = CameraConfig()
 
     # name
     try:
         cam.name = config["name"]
     except KeyError:
-        if(switched):
-            parseError("could not read switched camera name")
-        else:
-            parseError("could not read camera name")
-        
+        parseError("could not read camera name")
         return False
 
     # path
     try:
-        if(switched):
-            cam.key = config["key"]
-        else:
-            cam.path = config["path"]
+        cam.path = config["path"]
     except KeyError:
-        if(switched):
-            parseError("switched camera '{}': could not read key".format(cam.name))
-        else:
-            parseError("camera '{}': could not read path".format(cam.name))
+        parseError("camera '{}': could not read path".format(cam.name))
         return False
 
     # stream properties
-    if(not switched):
-        cam.streamConfig = config.get("stream")
-        cam.config = config
+    cam.streamConfig = config.get("stream")
 
-    if(not switched):
-        cameraConfigs.append(cam)
-    else:
-        switchedCameraConfigs.append(cam)
+    cam.config = config
 
+    cameraConfigs.append(cam)
     return True
 
-#Read camera config
+def readSwitchedCameraConfig(config):
+    """Read single switched camera configuration."""
+    cam = CameraConfig()
+
+    # name
+    try:
+        cam.name = config["name"]
+    except KeyError:
+        parseError("could not read switched camera name")
+        return False
+
+    # path
+    try:
+        cam.key = config["key"]
+    except KeyError:
+        parseError("switched camera '{}': could not read key".format(cam.name))
+        return False
+
+    switchedCameraConfigs.append(cam)
+    return True
+
 def readConfig():
+    """Read configuration file."""
     global team
     global server
 
@@ -106,21 +157,20 @@ def readConfig():
     except KeyError:
         parseError("could not read cameras")
         return False
-    
     for camera in cameras:
-        if not readCameraConfig(camera, False):
+        if not readCameraConfig(camera):
             return False
 
     # switched cameras
     if "switched cameras" in j:
         for camera in j["switched cameras"]:
-            if not readCameraConfig(camera, True):
+            if not readSwitchedCameraConfig(camera):
                 return False
 
     return True
 
-#Start running camera
 def startCamera(config):
+    """Start running the camera."""
     print("Starting camera '{}' on {}".format(config.name, config.path))
     inst = CameraServer.getInstance()
     camera = UsbCamera(config.name, config.path)
@@ -132,13 +182,10 @@ def startCamera(config):
     if config.streamConfig is not None:
         server.setConfigJson(json.dumps(config.streamConfig))
 
-    cvSink = inst.getVideo()
-    cvSrc = inst.putVideo(config.name + " Vision", 160, 120) #Change to get values from config file
+    return camera
 
-    return camera, cvSink, cvSrc
-
-#Start running switched camera
 def startSwitchedCamera(config):
+    """Start running the switched camera."""
     print("Starting switched camera '{}' on {}".format(config.name, config.key))
     server = CameraServer.getInstance().addSwitchedCamera(config.name)
 
@@ -161,33 +208,7 @@ def startSwitchedCamera(config):
 
     return server
 
-def processVision(cvSink, cvSrc):
-    frame = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
-    time, frame = cvSink.grabFrame(frame)
-    
-    if time == 0:
-        cvSrc.notifyError(cvSink.getError());
-    
-    blur = cv2.blur(frame, (3,3))
-
-    #converting to HSV
-    hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
-
-    # Normal masking algorithm
-    lower = np.array([sd.getNumber("h1", 0),sd.getNumber("s1", 0),sd.getNumber("v1", 0)])
-    upper = np.array([sd.getNumber("h2", 180),sd.getNumber("s2", 255),sd.getNumber("v2", 255)])
-
-    structure = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-
-    mask = cv2.inRange(hsv, lower, upper)
-
-    openImg = cv2.morphologyEx(mask, cv2.MORPH_OPEN, structure, iterations=1)
-
-    result = cv2.bitwise_and(frame, frame, mask = openImg)
-
-    cvSrc.putFrame(result)
-
-def init():
+if __name__ == "__main__":
     if len(sys.argv) >= 2:
         configFile = sys.argv[1]
 
@@ -204,27 +225,14 @@ def init():
         print("Setting up NetworkTables client for team {}".format(team))
         ntinst.startClientTeam(team)
 
-    cvSink = None;
-    cvSrc = None;
-
     # start cameras
     for config in cameraConfigs:
-        serv, cvSink, cvSrc = startCamera(config)
-        cameras.append(serv)
+        cameras.append(startCamera(config))
 
     # start switched cameras
     for config in switchedCameraConfigs:
         startSwitchedCamera(config)
 
-    sd.putNumber("h1", 0)
-    sd.putNumber("s1", 0)
-    sd.putNumber("v1", 0)
-    sd.putNumber("h2", 180)
-    sd.putNumber("v2", 255)
-    sd.putNumber("s2", 255)
-
+    # loop forever
     while True:
-        processVision(cvSink, cvSrc)
-
-if __name__ == "__main__":
-    init()
+        time.sleep(10)
