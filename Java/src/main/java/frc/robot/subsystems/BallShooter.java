@@ -42,7 +42,6 @@ public class BallShooter extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   // Shooter Methods
-
   public void setShooterPercent(double percent){
     shooterMotor1.set(percent);
   }
@@ -73,8 +72,12 @@ public class BallShooter extends SubsystemBase {
     return shooterMotor1.getEncoder().getVelocity();
   }
 
-  public void stopBall(){
+  public void stopShooter(){
     shooterMotor1.stopMotor();
+  }
+
+  public void stopPreroller(){
+    preRoller.stopMotor();
   }
 
   //--------------------------------------------------------------------------------------------------

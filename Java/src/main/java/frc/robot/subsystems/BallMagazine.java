@@ -11,9 +11,11 @@ import static frc.robot.Constants.PowerCellConstants.C_MAGAZINE_SPEED;
 import static frc.robot.Constants.PowerCellConstants.P_MAGAZINE_spMAX_1;
 import static frc.robot.Constants.PowerCellConstants.P_MAGAZINE_spMAX_2;
 
+import com.revrobotics.CANDigitalInput.LimitSwitch;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -38,7 +40,8 @@ public class BallMagazine extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Intake Methods
   public void feedBall(){
-    magazineMotor1.set(-C_MAGAZINE_SPEED);
+    //Assume this runs ball one position over
+    //magazineMotor1.set(-C_MAGAZINE_SPEED);
   }
 
   public void stopMagazine(){

@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ElevatorMax;
 import frc.robot.commands.ProfiledTurnTo;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.BallIntake;
 import frc.robot.subsystems.BallShooter;
@@ -69,13 +71,11 @@ public class RobotContainer{
                                         .whenReleased(()    -> s_driveTrain.setSlow(false));
 
         // BallIntake Commands
-        (new JoystickButton(leftJoy, 3)).whenPressed(()     -> s_ballIntake.intakeBall())
-                                        .whenReleased(()    -> s_ballIntake.stopBall());
+        (new JoystickButton(leftJoy, 3)).whenPressed(()     -> new RunIntake(s_ballIntake));
         
         // BallShooter Commands
-        (new JoystickButton(leftJoy, 4)).whenPressed(()     -> s_ballShooter.setShooterPercent(.5)) //TODO: change later
-                                        .whenReleased(()    -> s_ballShooter.stopBall());
-
+        
+        
         // Elevator Commands
         (new JoystickButton(leftJoy, 5)).whileActiveOnce(new ElevatorMax(s_elevator));
         

@@ -79,6 +79,9 @@ public final class Constants{
         public static final int P_INTAKE_spMAX_1 = 4;           
         public static final int P_INTAKE_spMAX_2 = 5;
         
+        public static final int P_INTAKE_sol_1 = 0;
+        public static final int P_INTAKE_sol_2 = 0;
+
         public static final int C_INTAKE_SPEED = 1;
 
         // Shooter Constants
@@ -95,17 +98,27 @@ public final class Constants{
 
         public static final double C_SHOOTER_EPR = 42;
 
-        public static final double C_SHOOTER_SPEED = 0.0; // Velocity in rpm
+        public static final double C_SHOOTER_SPEED_CLOSE = 0.0,
+                                    C_SHOOTER_SPEED_TRENCH = 0.0; // Velocity in rpm
 
+        public static final double C_SHOOTER_SPEED_TOLERANCE = 0.0;
+        
+        public static enum E_SHOOT_POS{
+            CLOSE,
+            TRENCH;
+        }
+        
         // Magazine Constants
         public static final int P_MAGAZINE_spMAX_1 = 4;
         public static final int P_MAGAZINE_spMAX_2 = 5;
         
         public static final int C_MAGAZINE_SPEED = 1;
 
+        public static final int[] P_MAGAZINE_limSwitch = {0, 1, 2, 3};
+
         // Pre-roller Constants
         public static final int P_PREROLLER_vicSPX = 0;     // TODO: Change to correct port number
-        
+        public static final double C_PREROLLER_SPEED = 0.5;
     }
 
     //--------------------------------------------------------------------------------------------------
