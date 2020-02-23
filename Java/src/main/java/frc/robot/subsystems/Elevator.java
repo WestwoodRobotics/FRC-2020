@@ -22,35 +22,49 @@ public class Elevator extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Variables/Features of Lift
   private final WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(P_ELEVATOR_motor_talSRX);    
+  private boolean isCompressed = false;
 
   //--------------------------------------------------------------------------------------------------
   // Constructor
-
   public Elevator() {
+    this.zeroEncoder();
   }
 
   //--------------------------------------------------------------------------------------------------
   // Methods for Elevator
 
-  public void eleLiftVolts(double v){
-    elevatorMotor.setVoltage(v);
+  public void eleLiftVolts(double v)        {elevatorMotor.setVoltage(v);}
+  public void eleLiftPercent(double speed)  {elevatorMotor.set(speed);}
+  public void stopMotor()                   {elevatorMotor.stopMotor();}
+
+  public void stopCoast(){
+    this.eleLiftVolts(C_ELEVATOR_minVOLT);
   }
 
-  public void eleLiftPercent(double speed){
-    elevatorMotor.set(speed);
+  public void lowerElevator(){
+    this.eleLiftVolts(C_ELEVATOR_lowerVOLT);
   }
+  //-------------------------------------------------------------
+      //Encoders
+  public double getEncoderPos()   {return elevatorMotor.getSelectedSensorPosition();}
+  public double getEncoderVel()   {return elevatorMotor.getSelectedSensorVelocity();}
+  
+  public void   zeroEncoder()     {elevatorMotor.setSelectedSensorPosition(0);}
 
-  public void stopMotor(){
-    elevatorMotor.set(0.1); //TODO: Change this later
+  //-------------------------------------------------------------
+      // Velocity
+  public double getVelocityMeterPerSec()  {return talVelToMetersPerSec(getEncoderVel());} // TODO: Complete the method**************
+  
+
+  //-------------------------------------------------------------
+  public boolean isCompressed(double tolerance){
+    if(this.getEncoderPos() == tolerance || this.getEncoderPos() == -tolerance){
+      isCompressed = true;
+    }
+    return isCompressed;
   }
   
-  public double getVelocity(){
-    return talVelToMetersPerSec(elevatorMotor.getSelectedSensorVelocity());   // TODO: Complete the method**************
-  }
-
-  public boolean atMax(){
-    return getVelocity() > 0.1;                        //TODO: Check the actual velocity********************************
-  }
+  public boolean atMax(double tolerance)  {return getVelocityMeterPerSec() <= tolerance;}
 
 
   //--------------------------------------------------------------------------------------------------

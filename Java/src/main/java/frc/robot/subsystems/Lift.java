@@ -7,8 +7,12 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.LiftConstants.P_LIFT_motor1_talSRX;
+import static frc.robot.Constants.LiftConstants.P_LIFT_motor2_vicSPX;
+
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import static frc.robot.Constants.LiftConstants.*;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -20,8 +24,8 @@ public class Lift extends SubsystemBase {
     
   //--------------------------------------------------------------------------------------------------
   // Variables/Features of Lift
-  private final WPI_TalonSRX liftMotor1   = new WPI_TalonSRX(P_LIFT_motor1_talSRX),
-                             liftMotor2   = new WPI_TalonSRX(P_LIFT_motor2_talSRX);
+  private final WPI_TalonSRX liftMotor1   = new WPI_TalonSRX(P_LIFT_motor1_talSRX);
+  private final VictorSPX    liftMotor2   = new VictorSPX(P_LIFT_motor2_vicSPX);
 
   //--------------------------------------------------------------------------------------------------
   // Constructor
@@ -31,18 +35,10 @@ public class Lift extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   // Method of the lift
-  public void liftVoltage(double volts){
-    liftMotor1.setVoltage(volts);
-  }
-
-  public void liftPercentage(double speed){
-    liftMotor1.set(speed);
-  }
-
-  public void stopMotor(){
-    liftMotor1.set(0);
-  }
-
+  public void liftVolts(double volts)    {liftMotor1.setVoltage(volts);}
+  public void liftPercent(double speed)  {liftMotor1.set(speed);}
+  public void stopMotor()                {liftMotor1.stopMotor();}
+   
   //--------------------------------------------------------------------------------------------------
   @Override
   public void periodic() {

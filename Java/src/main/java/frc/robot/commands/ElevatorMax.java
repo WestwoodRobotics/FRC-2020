@@ -23,11 +23,15 @@ public class ElevatorMax extends CommandBase {
   // Variables
   private Elevator s_elevator;
   private double speed;
+  private double tolerance;
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public ElevatorMax(Elevator s_elevator) {
     this.s_elevator = s_elevator;
+    
+    tolerance = C_eleMAX_TOLERANCE;
     speed = C_eleMAX_SPEED;
+
     addRequirements(s_elevator); 
   }
 
@@ -41,21 +45,20 @@ public class ElevatorMax extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      //s_e.liftPercent(speed);                                   // TODO: change speed later
-      //s_e.liftVolts(speed);
+      s_elevator.eleLiftPercent(speed);
   }
   
   //--------------------------------------------------------------------------------------------------
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_elevator.stopMotor();
+    s_elevator.stopCoast();
   }
 
   //--------------------------------------------------------------------------------------------------
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return s_elevator.atMax();
+    return s_elevator.atMax(tolerance);
   }
 }

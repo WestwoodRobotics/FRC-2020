@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ElevatorMax;
+import frc.robot.commands.LiftRobot;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.BallIntake;
@@ -30,7 +31,7 @@ public class RobotContainer{
     
         // Declare Commands
     private ProfiledTurnTo      a_turn2;
-
+    private LiftRobot           t_liftRobot;
         // Declare JoyStick
     private Joystick leftJoy    = new Joystick(P_OI_JOY_LEFT);
     private Joystick rightJoy   = new Joystick(P_OI_JOY_RIGHT);            
@@ -62,31 +63,31 @@ public class RobotContainer{
 
     private void configureButtonBindings(){
         //Configure button bindings
-        (new JoystickButton(rightJoy, 1)).whenPressed(()    -> s_driveTrain.setSlow(true))
-                                         .whenReleased(()   -> s_driveTrain.setSlow(false));
+        (new JoystickButton(rightJoy, 1)).whenPressed(  ()-> s_driveTrain.setSlow(true))
+                                         .whenReleased( ()-> s_driveTrain.setSlow(false));
 
-        (new JoystickButton(leftJoy, 1)).whenPressed(()     -> s_driveTrain.setSlow(true))
-                                        .whenReleased(()    -> s_driveTrain.setSlow(false));
+        (new JoystickButton(leftJoy, 1)).whenPressed(   ()-> s_driveTrain.setSlow(true))
+                                        .whenReleased(  ()-> s_driveTrain.setSlow(false));
 
         // BallIntake Commands
-        (new JoystickButton(leftJoy, 3)).whenPressed(()     -> s_ballIntake.intakeBall())
-                                        .whenReleased(()    -> s_ballIntake.stopBall());
+        (new JoystickButton(leftJoy, 3)).whenPressed(   ()-> s_ballIntake.intakeBall())
+                                        .whenReleased(  ()-> s_ballIntake.stopBall());
         
         // BallShooter Commands
-        (new JoystickButton(leftJoy, 4)).whenPressed(()     -> s_ballShooter.setShooterPercent(.5)) //TODO: change later
-                                        .whenReleased(()    -> s_ballShooter.stopBall());
+        (new JoystickButton(leftJoy, 4)).whenPressed(   ()-> s_ballShooter.setShooterPercent(.5)) //TODO: change later
+                                        .whenReleased(  ()-> s_ballShooter.stopBall());
 
-        // Elevator Commands
+        // ElevatorLift Commands
         (new JoystickButton(leftJoy, 5)).whileActiveOnce(new ElevatorMax(s_elevator));
         
-        // Lift Commands
-        (new JoystickButton(leftJoy, 6)).whenPressed(()     -> s_lift.liftPercentage(1))      //TODO: change speed*******************
-                                        .whenReleased(()    -> s_lift.stopMotor());
+        (new JoystickButton(leftJoy, 6)).whenPressed(   ()-> s_elevator.lowerElevator())
+                                        .whenReleased(  new LiftRobot(s_lift, s_elevator)); 
     }
 
     public Command getAutonomousCommand(String m_autoSelected){
         s_driveTrain.zeroHeading();
         s_driveTrain.resetOdometry(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
+        
         switch (m_autoSelected) {
             /*case "TurnTo":
                 return new TurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);*/
