@@ -7,17 +7,11 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.DriveConstants.C_kD_turn;
-import static frc.robot.Constants.DriveConstants.C_kI_turn;
-import static frc.robot.Constants.DriveConstants.C_kP_turn;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,10 +21,8 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  
+  private String[] autoChoices;
 
   private RobotContainer rc;
 
@@ -40,15 +32,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    /*m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);*/
+    SmartDashboard.putStringArray("Auto choices", autoChoices);
 
     rc = new RobotContainer();
-
-    /*SmartDashboard.putNumber("P", 0);
-    SmartDashboard.putNumber("I", 0);
-    SmartDashboard.putNumber("D", 0);*/
   }
 
   /**
@@ -62,10 +48,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    
-    /*C_kP_turn = SmartDashboard.getNumber("P", 0.0);
-    C_kI_turn = SmartDashboard.getNumber("I", 0.0);
-    C_kD_turn = SmartDashboard.getNumber("D", 0.0);*/
   }
 
   /**
@@ -81,14 +63,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    //m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    //System.out.println("Auto selected: " + m_autoSelected);
-    Command m_auto = rc.getAutonomousCommand();
-    System.out.println(m_auto instanceof RamseteCommand);
-
-    if(m_auto != null){
-      m_auto.schedule();
+    String autoSelected = SmartDashboard.getString("Auto choices", "None");
+    Command autoCommand = rc.getAutonomousCommand(autoSelected);
+    
+    if(autoCommand != null){
+      autoCommand.schedule();
     }
   }
 
@@ -97,21 +76,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    /*C_kP_turn = SmartDashboard.getNumber("P", 0.0);
-    C_kI_turn = SmartDashboard.getNumber("I", 0.0);
-    C_kD_turn = SmartDashboard.getNumber("D", 0.0);*/
-
-    //((ProfiledPIDCommand)rc.getAutonomousCommand()).getController().setPID(C_kP_turn, C_kI_turn, C_kD_turn);
-
-    /*switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }*/
   }
 
   @Override

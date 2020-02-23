@@ -20,7 +20,7 @@ import frc.robot.subsystems.Lift;
 public class RobotContainer{
     
     //--------------------------------------------------------------------------------------------------
-        // Declare Robot Subsystems
+    // Declare Robot Subsystems
     private final DriveTrain    s_driveTrain;
     public final  BallShooter   s_ballShooter;
     public final  BallIntake    s_ballIntake;
@@ -52,9 +52,6 @@ public class RobotContainer{
                 s_driveTrain)
         );
 
-        //s_driveTrain.zeroLeftEncoder();
-        //s_driveTrain.zeroRightEncoder();
-        //new RunCommand(() -> s_driveTrain.getHeading());
         //Configure default commands (for auton choosing), button bindings
         configureButtonBindings();
     }
@@ -84,25 +81,20 @@ public class RobotContainer{
         // Lift Commands
         (new JoystickButton(leftJoy, 6)).whenPressed(()     -> s_lift.liftPercentage(1))      //TODO: change speed*******************
                                         .whenReleased(()    -> s_lift.stopMotor());
-
     }
 
-    //--------------------------------------------------------------------------------------------------
-    // Autonomous Commands
-
-    public Command getAutonomousCommand(){
+    public Command getAutonomousCommand(String m_autoSelected){
         s_driveTrain.zeroHeading();
         s_driveTrain.resetOdometry(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
-
-        //s_ballShooter.intakeBall();                       NEED TO time how long to intake balls and then stop 
-        //s_ballShooter.stopBall();
-        //s_ballShooter.shootBall();
-
-        //return a_turn2;
-        return s_driveTrain.getTrajectoryCommand()
-                           .andThen(new ProfiledTurnTo(90, s_driveTrain));
-
-
+        switch (m_autoSelected) {
+            /*case "TurnTo":
+                return new TurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);*/
+            case "ProfiledTurnTo":
+                return new ProfiledTurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);
+            default:
+                return null;
+        }
 
     }
+
 }
