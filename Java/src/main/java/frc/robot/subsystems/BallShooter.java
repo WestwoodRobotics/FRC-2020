@@ -9,8 +9,12 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.PowerCellConstants.*;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -24,47 +28,53 @@ public class BallShooter extends SubsystemBase {
   private CANSparkMax shooterMotor1 = new CANSparkMax(P_SHOOTER_spMAX_1, MotorType.kBrushless);
   private CANSparkMax shooterMotor2 = new CANSparkMax(P_SHOOTER_spMAX_2, MotorType.kBrushless);
 
-  private double speed;
+  private WPI_VictorSPX preRoller = new WPI_VictorSPX(P_PREROLLER_vicSPX);
 
-  /** shreyes added code kindly remove at a later date
-   *    private WPI_VictorSPX intakeMotor3 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_1);
-   *    private WPI_VictorSPX intakeMotor4 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
-   */
-  
-  //private boolean intake;                                                             TODO: Delete...?*********************
-
+  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS, C_kV, C_kA);
+  private PIDController velPID = new PIDController(C_kP, C_kI, C_kD);
   //--------------------------------------------------------------------------------------------------
   // Constructor
 
   public BallShooter() {
     //intake = false;
-    speed = C_SHOOTER_SPEED;
     shooterMotor2.follow(shooterMotor1, true);
   }
 
   //--------------------------------------------------------------------------------------------------
   // Shooter Methods
 
-  public void shootBall(){
-      //if(!intake){
-    shooterMotor1.set(-speed);
+  public void setShooterPercent(double percent){
+    shooterMotor1.set(percent);
+  }
 
-      /** shreyes added code kindly remove at a later date
-       * intakeMotor3.set(-1);
-       * intakeMotor4.set(-1);
-       */
-      
-      //} "if" bracket
+  public void setShooterVoltage(double voltage){
+    shooterMotor1.setVoltage(voltage);
+  }
+
+  public void setShooterVelocityPID(double metersPerSec){
+    double volts = 0.0;
+
+    volts += feedforward.calculate(metersPerSec);
+    volts += velPID.calculate(getShooterVel());
+
+    this.setShooterVoltage(volts);
+  }
+
+  // TODO: Eventually change this method to a set constant speed
+  public void setPrerollerPercent(double percent){
+    preRoller.set(percent);
+  }
+
+  public void setPrerollerVoltage(double voltage){
+    preRoller.setVoltage(voltage);
+  }
+
+  public double getShooterVel(){
+    return shooterMotor1.getEncoder().getVelocity();
   }
 
   public void stopBall(){
-      //intake = false;
-    shooterMotor1.set(0);
-
-      /** shreyes added code kindly remove at a later date
-       *  intakeMotor3.set(0);
-       *  intakeMotor4.set(0);
-       */
+    shooterMotor1.stopMotor();
   }
 
   //--------------------------------------------------------------------------------------------------

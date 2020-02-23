@@ -85,14 +85,27 @@ public final class Constants{
         public static final int P_SHOOTER_spMAX_1 = 4;
         public static final int P_SHOOTER_spMAX_2 = 5;
         
-        public static final int C_SHOOTER_SPEED = 1;
+        public static final double C_kS = 0.0,
+                                    C_kV = 0.0,
+                                    C_kA = 0.0;
         
-        // Shooter Constants
+        public static final double C_kP = 0.0,
+                                    C_kI = 0.0,
+                                    C_kD = 0.0;
+
+        public static final double C_SHOOTER_EPR = 42;
+
+        public static final double C_SHOOTER_SPEED = 0.0; // Velocity in rpm
+
+        // Magazine Constants
         public static final int P_MAGAZINE_spMAX_1 = 4;
         public static final int P_MAGAZINE_spMAX_2 = 5;
         
         public static final int C_MAGAZINE_SPEED = 1;
-    
+
+        // Pre-roller Constants
+        public static final int P_PREROLLER_vicSPX = 0;     // TODO: Change to correct port number
+        
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -103,16 +116,15 @@ public final class Constants{
         // Elevator Constants
         public static final int P_ELEVATOR_motor_talSRX = 0;      // TODO: Change ports later******************************
 
-        public static final int C_ELEVATOR_EPR = 1024*5;
-        public static final int C_SPOOL_DIAMETER_METERS = 1;  
+        public static final double C_ELEVATOR_EPR = 1024*5;
+        public static final double C_SPOOL_DIAMETER_METERS = 1;  
         
         public static double ticksToMeters(double ticks){
             return ticks*Math.PI*C_SPOOL_DIAMETER_METERS/C_ELEVATOR_EPR;
         }
 
         public static double talVelToMetersPerSec(double sensorVel){
-            double metersPerSec = sensorVel;                                    // TODO: FIGURE THIS OUT********************
-            return metersPerSec;
+            return ticksToMeters(sensorVel) * 10;
         }
 
         // Lift Constants

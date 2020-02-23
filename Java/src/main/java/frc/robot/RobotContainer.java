@@ -6,6 +6,7 @@ import static frc.robot.Constants.JoyConstants.P_OI_JOY_RIGHT;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ElevatorMax;
@@ -72,7 +73,7 @@ public class RobotContainer{
                                         .whenReleased(()    -> s_ballIntake.stopBall());
         
         // BallShooter Commands
-        (new JoystickButton(leftJoy, 4)).whenPressed(()     -> s_ballShooter.shootBall())
+        (new JoystickButton(leftJoy, 4)).whenPressed(()     -> s_ballShooter.setShooterPercent(.5)) //TODO: change later
                                         .whenReleased(()    -> s_ballShooter.stopBall());
 
         // Elevator Commands

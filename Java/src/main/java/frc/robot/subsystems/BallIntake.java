@@ -25,24 +25,21 @@ public class BallIntake extends SubsystemBase {
 
   private CANSparkMax intakeMotor1 = new CANSparkMax(P_INTAKE_spMAX_1, MotorType.kBrushless);   
   private CANSparkMax intakeMotor2 = new CANSparkMax(P_INTAKE_spMAX_2, MotorType.kBrushless);
-
-  private double speed;
   
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public BallIntake() {
-    speed = C_INTAKE_SPEED;
     intakeMotor2.follow(intakeMotor1, true);
   }
 
   //--------------------------------------------------------------------------------------------------
   // Intake Methods
   public void intakeBall(){
-    intakeMotor1.set(-speed);
+    intakeMotor1.set(-C_INTAKE_SPEED);
   }
 
   public void stopBall(){
-    intakeMotor1.set(0);
+    intakeMotor1.stopMotor();
   }
 
   //--------------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void stopMotor(){
-    elevatorMotor.set(0);
+    elevatorMotor.set(0.1); //TODO: Change this later
   }
   
   public double getVelocity(){
