@@ -2,9 +2,10 @@
             "brightness": 0,
             "fps": 30,
             "height": 240,
+            "width": 320,
             "name": "PS3 Eyecam",
             "path": "/dev/v4l/by-id/usb-OmniVision_Technologies__Inc._USB_Camera-B4.09.24.1-video-index0",
-            "pixel format": "yuyv",
+            "pixel format": "YUYV",
             "properties": [
                 {
                     "name": "connect_verbose",
@@ -61,6 +62,6 @@
             ],
             "stream": {
                 "properties": []
-            },
-            "width": 320
+            }
+            
         }

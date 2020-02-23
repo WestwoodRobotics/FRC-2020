@@ -7,7 +7,27 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.C_DRIVE_EPR;
+import static frc.robot.Constants.DriveConstants.C_TRACK_WIDTH_METERS;
+import static frc.robot.Constants.DriveConstants.C_WHEEL_DIAMETER_METERS;
+import static frc.robot.Constants.DriveConstants.C_kA;
+import static frc.robot.Constants.DriveConstants.C_kB_RAMSETE;
+import static frc.robot.Constants.DriveConstants.C_kD_LEFT;
+import static frc.robot.Constants.DriveConstants.C_kD_RIGHT;
+import static frc.robot.Constants.DriveConstants.C_kI_LEFT;
+import static frc.robot.Constants.DriveConstants.C_kI_RIGHT;
+import static frc.robot.Constants.DriveConstants.C_kP_LEFT;
+import static frc.robot.Constants.DriveConstants.C_kP_RIGHT;
+import static frc.robot.Constants.DriveConstants.C_kS;
+import static frc.robot.Constants.DriveConstants.C_kV;
+import static frc.robot.Constants.DriveConstants.C_kZeta_RAMSETE;
+import static frc.robot.Constants.DriveConstants.C_maxAccel;
+import static frc.robot.Constants.DriveConstants.C_maxVel;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_follow_talFX;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_LEFT_master_talFX;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_follow_talFX;
+import static frc.robot.Constants.DriveConstants.P_DRIVE_RIGHT_master_talFX;
+import static frc.robot.Constants.DriveConstants.ticksToMeters;
 
 import java.util.List;
 
@@ -32,7 +52,6 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.ProfiledTurnTo;
 
 public class DriveTrain extends SubsystemBase {
   /**
@@ -101,12 +120,16 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Left Encoder", this.leftEncoderGetMeters());
     SmartDashboard.putNumber("Right Encoder", this.rightEncoderGetMeters());
 
-    odometry.update(Rotation2d.fromDegrees(this.getHeadingDegrees()), this.leftEncoderGetMeters(), this.rightEncoderGetMeters());
+    odometry.update(
+                Rotation2d.fromDegrees(this.getHeadingDegrees()), 
+                this.leftEncoderGetMeters(), 
+                this.rightEncoderGetMeters()
+              );
   }
 
   //--------------------------------------------------------------------------------------------------
-  
   // Drive wheels (percent) [-1.0, 1.0]
+
   public void driveWheelsPercent(double leftPercent, double rightPercent){
     drive.tankDrive(leftPercent, rightPercent);
   }
@@ -116,26 +139,27 @@ public class DriveTrain extends SubsystemBase {
     rightMaster.setVoltage(rightVolts);
     drive.feed();
   }
-
+  
   public void setVelocityPID(double leftMetersPerSec, double rightMetersPerSec){
     double leftVolts = 0.0;
     double rightVolts = 0.0;
 
     DifferentialDriveWheelSpeeds wheelSpeeds = this.getWheelSpeeds();
 
-    leftVolts += feedforward.calculate(leftMetersPerSec);
-    rightVolts += feedforward.calculate(rightMetersPerSec);
+    leftVolts   += feedforward.calculate(leftMetersPerSec);
+    rightVolts  += feedforward.calculate(rightMetersPerSec);
 
-    leftVolts += leftVelPID.calculate(wheelSpeeds.leftMetersPerSecond, leftMetersPerSec);
-    rightVolts += rightVelPID.calculate(wheelSpeeds.rightMetersPerSecond, rightMetersPerSec);
+    leftVolts   += leftVelPID.calculate(wheelSpeeds.leftMetersPerSecond, leftMetersPerSec);
+    rightVolts  += rightVelPID.calculate(wheelSpeeds.rightMetersPerSecond, rightMetersPerSec);
 
     System.out.println(leftVolts + ", " + rightVolts);
 
     this.driveWheelsVolts(leftVolts, rightVolts);
   }
 
+  // Converts ticks/decS to m/s
   public double falconVelToMetersPerSec(double ticksPerDecasec){
-    double metersPerSec = ticksPerDecasec*10.0*Math.PI*C_WHEEL_DIAMETER_METERS/C_EPR;
+    double metersPerSec = ticksPerDecasec*10.0*Math.PI*C_WHEEL_DIAMETER_METERS/C_DRIVE_EPR;
     return metersPerSec;
   }
 
@@ -159,6 +183,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   //--------------------------------------------------------------------------------------------------
+  // Methods for Odometry/Trejectory
 
   public Pose2d getPose(){
     return odometry.getPoseMeters();
@@ -174,12 +199,16 @@ public class DriveTrain extends SubsystemBase {
   public Command getTrajectoryCommand(){
     resetOdometry(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
 
-    DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(this.getFeedForward(), this.getKinematics(), 10.0);
+    DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+                                                                      this.getFeedForward(), 
+                                                                      this.getKinematics(), 
+                                                                      10.0
+                                                                    );
     TrajectoryConfig config = new TrajectoryConfig(C_maxVel, C_maxAccel).setKinematics(this.getKinematics()).addConstraint(autoVoltageConstraint);
     
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
       new Pose2d(0.0, 0.0, new Rotation2d(0.0)), 
-      List.of(
+      List.of(                                                                            // List of points that we want to hit on the field
         new Translation2d(1.0, 0.0),
         new Translation2d(2.0, 0.0),
         new Translation2d(2.0, -1.0),
@@ -191,12 +220,19 @@ public class DriveTrain extends SubsystemBase {
     );
     
     //System.out.println(exampleTrajectory.getStates());
-    RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, this::getPose, new RamseteController(C_kB_RAMSETE, C_kZeta_RAMSETE), this.getFeedForward(), this.getKinematics(), this::getWheelSpeeds, this.getController("l"), this.getController("r"), this::driveWheelsVolts, this);
+    RamseteCommand ramseteCommand = new RamseteCommand(
+                                          exampleTrajectory, 
+                                          this::getPose, 
+                                          new RamseteController(C_kB_RAMSETE, C_kZeta_RAMSETE), 
+                                          this.getFeedForward(), this.getKinematics(), 
+                                          this::getWheelSpeeds, 
+                                          this.getController("l"), this.getController("r"), 
+                                          this::driveWheelsVolts, this
+                                        );
 
     return ramseteCommand;
   }
 
-  //--------------------------------------------------------------------------------------------------
   public double getHeadingDegrees(){
     return -imu.pidGet();
   }
@@ -207,8 +243,8 @@ public class DriveTrain extends SubsystemBase {
 
   public double getTurnRate(){
     return imu.getRate();
-  }
-
+  } 
+  
   public double leftEncoderGetTicks(){
     return leftMaster.getSelectedSensorPosition();
   }
@@ -254,7 +290,10 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds(){
-    DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds(this.falconVelToMetersPerSec(leftMaster.getSelectedSensorVelocity()), this.falconVelToMetersPerSec(rightMaster.getSelectedSensorVelocity()));
+    DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds(
+                                                this.falconVelToMetersPerSec(leftMaster.getSelectedSensorVelocity()), 
+                                                this.falconVelToMetersPerSec(rightMaster.getSelectedSensorVelocity())
+                                              );
     SmartDashboard.putNumber("left speed", speeds.leftMetersPerSecond);
     SmartDashboard.putNumber("right speed", speeds.rightMetersPerSecond);
     return speeds;
