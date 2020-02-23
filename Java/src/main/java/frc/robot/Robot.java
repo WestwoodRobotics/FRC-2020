@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     String autoSelected = SmartDashboard.getString("Auto choices", "None");
     Command autoCommand = rc.getAutonomousCommand(autoSelected);
-
+    
     if(autoCommand != null){
       autoCommand.schedule();
     }
@@ -76,12 +76,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    
   }
 
   @Override
   public void teleopInit() {
-
+    
   }
 
   /**

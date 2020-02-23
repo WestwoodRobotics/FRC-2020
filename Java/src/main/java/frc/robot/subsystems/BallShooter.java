@@ -7,67 +7,64 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import static frc.robot.Constants.PowerCellConstants.*;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.IntakeConstants.*;
+
+/**
+ * This subsystem is responsible for shooting the PowerCells
+ */
 
 public class BallShooter extends SubsystemBase {
-  /**
-   * Creates a new BallShooter.
-   */
-
-  //--------------------------------------------------------------------------------------------------
-  //Variables/Features of ball shooter
-  private WPI_VictorSPX intakeMotor1 = new WPI_VictorSPX(P_SHOOTER_vicSPX_1);
-  private WPI_VictorSPX intakeMotor2 = new WPI_VictorSPX(P_SHOOTER_vicSPX_2);
-
-  // shreyes added code kindly remove at a later date
-  //private WPI_VictorSPX intakeMotor3 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_1);
-  //private WPI_VictorSPX intakeMotor4 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
   
-  private boolean intake;
+  //--------------------------------------------------------------------------------------------------
+  //Variables/Features of BallShooter
+  private CANSparkMax shooterMotor1 = new CANSparkMax(P_SHOOTER_spMAX_1, MotorType.kBrushless);
+  private CANSparkMax shooterMotor2 = new CANSparkMax(P_SHOOTER_spMAX_2, MotorType.kBrushless);
+
+  private double speed;
+
+  /** shreyes added code kindly remove at a later date
+   *    private WPI_VictorSPX intakeMotor3 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_1);
+   *    private WPI_VictorSPX intakeMotor4 = new WPI_VictorSPX(IntakeConstants.P_SHOOTER_vicSPX_2);
+   */
+  
+  //private boolean intake;                                                             TODO: Delete...?*********************
+
   //--------------------------------------------------------------------------------------------------
   // Constructor
 
   public BallShooter() {
-    intake = false;
+    //intake = false;
+    speed = C_SHOOTER_SPEED;
+    shooterMotor2.follow(shooterMotor1, true);
   }
 
   //--------------------------------------------------------------------------------------------------
-  // Intake methods
-
-  public void intakeBall(){
-    if (intake == false){
-      intake = true;
-      intakeMotor1.set(1);
-      intakeMotor2.set(1);
-
-      // shreyes added code kindly remove at a later date
-      // intakeMotor3.set(1);
-      // intakeMotor4.set(1);
-    }
-  }
+  // Shooter Methods
 
   public void shootBall(){
-    if(!intake){
-      intakeMotor1.set(-1);
-      intakeMotor2.set(-1);
+      //if(!intake){
+    shooterMotor1.set(-speed);
 
-      // shreyes added code kindly remove at a later date
-      // intakeMotor3.set(-1);
-      // intakeMotor4.set(-1);
-    } 
+      /** shreyes added code kindly remove at a later date
+       * intakeMotor3.set(-1);
+       * intakeMotor4.set(-1);
+       */
+      
+      //} "if" bracket
   }
 
   public void stopBall(){
-    intake = false;
-    intakeMotor1.set(0);
-    intakeMotor2.set(0);
+      //intake = false;
+    shooterMotor1.set(0);
 
-    // shreyes added code kindly remove at a later date
-   // intakeMotor3.set(0);
-      // intakeMotor4.set(0);
+      /** shreyes added code kindly remove at a later date
+       *  intakeMotor3.set(0);
+       *  intakeMotor4.set(0);
+       */
   }
 
   //--------------------------------------------------------------------------------------------------

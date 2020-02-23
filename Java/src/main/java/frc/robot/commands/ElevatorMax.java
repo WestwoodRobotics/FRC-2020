@@ -7,57 +7,55 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Elevator;
+import static frc.robot.Constants.LiftConstants.*;
 
-public class TankDrive extends CommandBase {
+
+/**
+ * Command that is responsible for raising the elevator to the max point
+ * and deploying the hooks
+ */
+
+public class ElevatorMax extends CommandBase {
 
   //--------------------------------------------------------------------------------------------------
   // Variables
-  private DriveTrain s_dt;
-  private DoubleSupplier leftSpeed;
-  private DoubleSupplier rightSpeed;
-  
-
+  private Elevator s_elevator;
+  private double speed;
   //--------------------------------------------------------------------------------------------------
   // Constructor
-  public TankDrive(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed, DriveTrain s_dt) {    
-    this.s_dt = s_dt;
-    this.leftSpeed = leftSpeed;
-    this.rightSpeed = rightSpeed;
-    addRequirements(s_dt);
+  public ElevatorMax(Elevator s_elevator) {
+    this.s_elevator = s_elevator;
+    speed = C_eleMAX_SPEED;
+    addRequirements(s_elevator); 
   }
-  
+
   //--------------------------------------------------------------------------------------------------
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    s_dt.stopWheels();
   }
-
+ 
   //--------------------------------------------------------------------------------------------------
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!s_dt.getSlow())
-      s_dt.driveWheelsPercent(leftSpeed.getAsDouble(), rightSpeed.getAsDouble());
-    else
-      s_dt.driveWheelsPercent(leftSpeed.getAsDouble()/2.0, rightSpeed.getAsDouble()/2.0);
+      //s_e.liftPercent(speed);                                   // TODO: change speed later
+      //s_e.liftVolts(speed);
   }
-
+  
   //--------------------------------------------------------------------------------------------------
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_dt.stopWheels();
+    s_elevator.stopMotor();
   }
 
   //--------------------------------------------------------------------------------------------------
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return s_elevator.atMax();
   }
 }

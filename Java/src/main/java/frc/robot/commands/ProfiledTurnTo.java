@@ -7,52 +7,61 @@
 
 package frc.robot.commands;
 
-import static frc.robot.Constants.DriveConstants.C_kTurn_D;
-import static frc.robot.Constants.DriveConstants.C_kTurn_P;
+import static frc.robot.Constants.DriveConstants.*;
 
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.subsystems.DriveTrain;
 
+
+
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class ProfiledTurnTo extends ProfiledPIDCommand {
-  /**
-   * Creates a new ProfiledTurnTo.
-   */
 
-  public ProfiledTurnTo(double degrees, DriveTrain s_dt) {
+public class ProfiledTurnTo extends ProfiledPIDCommand {
+  
+  //--------------------------------------------------------------------------------------------------
+  // Constructor
+
+  public ProfiledTurnTo(double degrees, DriveTrain s_driveTrain) {
     super(
       // The ProfiledPIDController used by the command
       new ProfiledPIDController(
-          // The PID gains
-          C_kTurn_P, 0, C_kTurn_D,
-          // The motion profile constraints
-          new TrapezoidProfile.Constraints(2, 10)),
-      // This should return the measurement
-      s_dt::getHeading,
-      // This should return the goal (can also be a constant)
-      //() -> new TrapezoidProfile.State(degrees, 0),
-      degrees,
-      // This uses the output
-      (output, setpoint) -> {
-        // Use the output (and setpoint, if desired) here
-        SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.274, 2.53, 0.165);
-        s_dt.turnRate(output + feedforward.calculate(setpoint.velocity));
-      },
-      s_dt
+        C_kP_turn, C_kI_turn, C_kD_turn,                                          // The PID gains
+        new TrapezoidProfile.Constraints(                                         // The motion profile constraints
+                        radiansToMeters(C_maxVel_turn),       // Max Velocity
+                        radiansToMeters(C_maxAccel_turn)      // Max Acceleration
+                      )
+      ),
+      s_driveTrain::getHeadingRadians,                                            // This should return the measurement
+      () -> new TrapezoidProfile.State(Math.toRadians(degrees), 0),               // This should return the goal (can also be a constant)
+      
+      (output, setpoint) -> {                                                     // This uses the output
+
+        ChassisSpeeds chassisSpeeds               = new ChassisSpeeds(0, 0, setpoint.velocity + output);
+        DifferentialDriveWheelSpeeds wheelSpeeds  = s_driveTrain.getKinematics().toWheelSpeeds(chassisSpeeds);
+
+        System.out.println(chassisSpeeds.omegaRadiansPerSecond);
+        s_driveTrain.setVelocityPID(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+      }
     );
+    
     // Use addRequirements() here to declare subsystem dependencies.
-    // Configure additional PID options by calling `getController` here.
-    addRequirements(s_dt);
+    addRequirements(s_driveTrain);
 
-    this.getController().enableContinuousInput(-180, 180);
-    this.getController().setTolerance(2.5, 10);
-  }
+    // Configure additional PID options by calling `getController` here...
+    this.getController().enableContinuousInput(-Math.PI, Math.PI);
+    this.getController().setTolerance(Math.toRadians(0.5), 0.2);        // Velocity tolerance NOT IN M/S, but in radians/s
 
+  } 
+
+  //--------------------------------------------------------------------------------------------------
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

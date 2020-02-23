@@ -1,0 +1,67 @@
+{
+            "brightness": 0,
+            "fps": 30,
+            "height": 240,
+            "width": 320,
+            "name": "PS3 Eyecam",
+            "path": "/dev/v4l/by-id/usb-OmniVision_Technologies__Inc._USB_Camera-B4.09.24.1-video-index0",
+            "pixel format": "YUYV",
+            "properties": [
+                {
+                    "name": "connect_verbose",
+                    "value": 1
+                },
+                {
+                    "name": "contrast",
+                    "value": 12
+                },
+                {
+                    "name": "saturation",
+                    "value": 25
+                },
+                {
+                    "name": "hue",
+                    "value": 50
+                },
+                {
+                    "name": "white_balance_automatic",
+                    "value": true
+                },
+                {
+                    "name": "exposure",
+                    "value": 120
+                },
+                {
+                    "name": "gain_automatic",
+                    "value": true
+                },
+                {
+                    "name": "gain",
+                    "value": 31
+                },
+                {
+                    "name": "horizontal_flip",
+                    "value": false
+                },
+                {
+                    "name": "vertical_flip",
+                    "value": false
+                },
+                {
+                    "name": "power_line_frequency",
+                    "value": 0
+                },
+                {
+                    "name": "sharpness",
+                    "value": 0
+                },
+                {
+                    "name": "auto_exposure",
+                    "value": 0
+                }
+            ],
+            "stream": {
+                "properties": []
+            }
+            
+        }
