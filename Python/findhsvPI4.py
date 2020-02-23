@@ -114,7 +114,7 @@ def readConfig():
     # switched cameras
     if "switched cameras" in j:
         for camera in j["switched cameras"]:
-            if not readCameraConfig(camera, True):
+            if not readCameraConfig(camera, True):                                                      #Difference-------------------------------
                 return False
 
     return True
@@ -133,8 +133,17 @@ def startCamera(config):
         server.setConfigJson(json.dumps(config.streamConfig))
 
     cvSink = inst.getVideo()
-    cvSrc = inst.putVideo(config.name + " Vision", 160, 120) #Change to get values from config file
 
+    if config.name == "PS3 Eyecam":
+            cvSrc = inst.putVideo(config.name + " Vision", 320, 240) #Change to get values from config file 160,120
+
+    else:
+            cvSrc = inst.putVideo(config.name + " Vision", 160, 120) #Change to get values from config file 160,120
+    print(config.height)
+
+
+
+    
     return camera, cvSink, cvSrc
 
 #Start running switched camera
@@ -166,7 +175,7 @@ def processVision(cvSink, cvSrc):
     time, frame = cvSink.grabFrame(frame)
     
     if time == 0:
-        cvSrc.notifyError(cvSink.getError());
+        cvSrc.notifyError(cvSink.getError())
     
     blur = cv2.blur(frame, (3,3))
 
@@ -204,8 +213,8 @@ def init():
         print("Setting up NetworkTables client for team {}".format(team))
         ntinst.startClientTeam(team)
 
-    cvSink = None;
-    cvSrc = None;
+    cvSink = None
+    cvSrc = None
 
     # start cameras
     for config in cameraConfigs:

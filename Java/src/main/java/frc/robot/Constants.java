@@ -1,11 +1,12 @@
 package frc.robot;
 
-//Create a new "constants" class for each mech
+// Create a new "constants" class for each mechanism/subsystem
 public final class Constants{
     
-    
-    //Constants for the DriveTrain
-    //All units in meters and meters per second
+    //--------------------------------------------------------------------------------------------------
+    // Constants for the DriveTrain
+    // All units in meters and meters per second
+
     public static final class DriveConstants{
         
         // Motor Controller Ports
@@ -15,7 +16,7 @@ public final class Constants{
                                     P_DRIVE_RIGHT_follow_talFX = 3;
         
         public static final double C_TRACK_WIDTH_METERS = 0.5207;
-        public static final double C_EPR = 22016;
+        public static final double C_DRIVE_EPR = 22016;
         public static final double C_WHEEL_DIAMETER_METERS = 0.1524;
 
         // Feedforward Constants
@@ -39,6 +40,7 @@ public final class Constants{
                                     C_kD_DIST = 0.00;
 
         // Turn PID Constants
+
         public static double C_kP_turn = 13,
                                     C_kI_turn = 0.00, 
                                     C_kD_turn = 0.00;
@@ -55,7 +57,7 @@ public final class Constants{
                                     C_kZeta_RAMSETE = 0.7;
         
         public static double ticksToMeters(double ticks){
-            return ticks*Math.PI*C_WHEEL_DIAMETER_METERS/C_EPR;
+            return ticks*Math.PI*C_WHEEL_DIAMETER_METERS/C_DRIVE_EPR;
         }
     
         public static double radiansToMeters(double radians){
@@ -67,13 +69,64 @@ public final class Constants{
         }
         
     }
+    
+    //--------------------------------------------------------------------------------------------------
+    // Constants for subsystems involved with PowerCells (Balls)
 
-    public static final class IntakeConstants{
+    public static final class PowerCellConstants{         // TODO: Change port/name later*****************************
+
+        // Intake Constants
+        public static final int P_INTAKE_spMAX_1 = 4;           
+        public static final int P_INTAKE_spMAX_2 = 5;
+        
+        public static final int C_INTAKE_SPEED = 1;
+
+        // Shooter Constants
         public static final int P_SHOOTER_spMAX_1 = 4;
         public static final int P_SHOOTER_spMAX_2 = 5;
+        
+        public static final int C_SHOOTER_SPEED = 1;
+        
+        // Shooter Constants
+        public static final int P_MAGAZINE_spMAX_1 = 4;
+        public static final int P_MAGAZINE_spMAX_2 = 5;
+        
+        public static final int C_MAGAZINE_SPEED = 1;
+    
     }
 
-    //Constants for JoySticks
+    //--------------------------------------------------------------------------------------------------
+    // Constants for subsystems involved with Lifting the Robot
+
+    public static final class LiftConstants{
+        
+        // Elevator Constants
+        public static final int P_ELEVATOR_motor_talSRX = 0;      // TODO: Change ports later******************************
+
+        public static final int C_ELEVATOR_EPR = 1024*5;
+        public static final int C_SPOOL_DIAMETER_METERS = 1;  
+        
+        public static double ticksToMeters(double ticks){
+            return ticks*Math.PI*C_SPOOL_DIAMETER_METERS/C_ELEVATOR_EPR;
+        }
+
+        public static double talVelToMetersPerSec(double sensorVel){
+            double metersPerSec = sensorVel;                                    // TODO: FIGURE THIS OUT********************
+            return metersPerSec;
+        }
+
+        // Lift Constants
+        public static final int P_LIFT_motor1_talSRX = 0;
+        public static final int P_LIFT_motor2_talSRX = 0;
+               
+        // ************************************************
+        // Command Constants
+        public static final int C_eleMAX_SPEED = 1;
+
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    // Constants for JoySticks
     public static final class JoyConstants{
         public static final int P_OI_JOY_LEFT = 0,
                                 P_OI_JOY_RIGHT = 1;
