@@ -74,6 +74,8 @@ public final class Constants{
     // Constants for subsystems involved with PowerCells (Balls)
 
     public static final class PowerCellConstants{         // TODO: Change port/name later*****************************
+        // Hood Constants
+        public static final int P_HOOD_sol = 0;
 
         // Intake Constants
         public static final int P_INTAKE_spMAX_1 = 4;           
@@ -154,6 +156,7 @@ public final class Constants{
     // Constants for JoySticks
     public static final class JoyConstants{
         public static final int P_OI_JOY_LEFT = 0,
-                                P_OI_JOY_RIGHT = 1;
+                                P_OI_JOY_RIGHT = 1,
+                                P_OI_JOY_MECH = 2;
     }
 }

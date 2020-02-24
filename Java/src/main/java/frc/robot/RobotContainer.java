@@ -1,20 +1,23 @@
 package frc.robot;
 
-import static frc.robot.Constants.JoyConstants.P_OI_JOY_LEFT;
-import static frc.robot.Constants.JoyConstants.P_OI_JOY_RIGHT;
+import static frc.robot.Constants.JoyConstants.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import frc.robot.Constants.PowerCellConstants.E_SHOOT_POS;
 import frc.robot.commands.ElevatorMax;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.RunIntake;
+import frc.robot.commands.RunShooter;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.BallIntake;
+import frc.robot.subsystems.BallMagazine;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
@@ -27,15 +30,27 @@ public class RobotContainer{
     private final DriveTrain    s_driveTrain;
     public final  BallShooter   s_ballShooter;
     public final  BallIntake    s_ballIntake;
+    public final  BallMagazine  s_ballMagazine;
     public final  Elevator      s_elevator;
     public final  Lift          s_lift;
     
-        // Declare Commands
+    // Declare Commands
     private ProfiledTurnTo      a_turn2;
 
-        // Declare JoyStick
+    // Declare JoyStick
     private Joystick leftJoy    = new Joystick(P_OI_JOY_LEFT);
     private Joystick rightJoy   = new Joystick(P_OI_JOY_RIGHT);            
+
+    private Joystick mechJoy    = new Joystick(P_OI_JOY_MECH);
+
+    // Declare Buttons
+    private JoystickButton slowModeLeft = new JoystickButton(leftJoy, 1),
+                            slowModeRight = new JoystickButton(rightJoy, 1),
+                            intake = new JoystickButton(mechJoy, 0),
+                            toggleShooterClose = new JoystickButton(mechJoy, 0),
+                            toggleShooterTrench = new JoystickButton(mechJoy, 0),
+                            feedBall = new JoystickButton(mechJoy, 0);
+
 
     //--------------------------------------------------------------------------------------------------
     // Constructor
@@ -43,6 +58,7 @@ public class RobotContainer{
         s_driveTrain    = new DriveTrain();
         s_ballShooter   = new BallShooter();
         s_ballIntake    = new BallIntake();
+        s_ballMagazine  = new BallMagazine();
         s_elevator      = new Elevator();
         s_lift          = new Lift();
         a_turn2         = new ProfiledTurnTo(90.0, s_driveTrain);
@@ -63,19 +79,23 @@ public class RobotContainer{
     // Configuring Buttons
 
     private void configureButtonBindings(){
-        //Configure button bindings
-        (new JoystickButton(rightJoy, 1)).whenPressed(()    -> s_driveTrain.setSlow(true))
+        //TODO: Configure button bindings
+        slowModeRight.whenPressed(()    -> s_driveTrain.setSlow(true))
                                          .whenReleased(()   -> s_driveTrain.setSlow(false));
 
-        (new JoystickButton(leftJoy, 1)).whenPressed(()     -> s_driveTrain.setSlow(true))
+        slowModeLeft.whenPressed(()     -> s_driveTrain.setSlow(true))
                                         .whenReleased(()    -> s_driveTrain.setSlow(false));
 
         // BallIntake Commands
-        (new JoystickButton(leftJoy, 3)).whenPressed(()     -> new RunIntake(s_ballIntake));
+        intake.toggleWhenPressed(new RunIntake(s_ballIntake));
         
         // BallShooter Commands
+        toggleShooterClose.toggleWhenPressed(new RunShooter(E_SHOOT_POS.CLOSE, s_ballShooter, s_ballMagazine));
+        toggleShooterTrench.toggleWhenPressed(new RunShooter(E_SHOOT_POS.TRENCH, s_ballShooter, s_ballMagazine));
         
-        
+        // BallMagazine Commands
+        feedBall.and(new Trigger(() -> s_ballShooter.isFlywheelReady())).whenActive(() -> s_ballMagazine.feedBall());
+
         // Elevator Commands
         (new JoystickButton(leftJoy, 5)).whileActiveOnce(new ElevatorMax(s_elevator));
         

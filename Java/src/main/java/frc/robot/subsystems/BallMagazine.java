@@ -7,15 +7,12 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.PowerCellConstants.C_MAGAZINE_SPEED;
-import static frc.robot.Constants.PowerCellConstants.P_MAGAZINE_spMAX_1;
-import static frc.robot.Constants.PowerCellConstants.P_MAGAZINE_spMAX_2;
+import static frc.robot.Constants.PowerCellConstants.*;
 
-import com.revrobotics.CANDigitalInput.LimitSwitch;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -31,6 +28,8 @@ public class BallMagazine extends SubsystemBase {
   private CANSparkMax magazineMotor1 = new CANSparkMax(P_MAGAZINE_spMAX_1, MotorType.kBrushless);   
   private CANSparkMax magazineMotor2 = new CANSparkMax(P_MAGAZINE_spMAX_2, MotorType.kBrushless);
 
+  private WPI_VictorSPX preRoller = new WPI_VictorSPX(P_PREROLLER_vicSPX);
+
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public BallMagazine() {
@@ -39,9 +38,26 @@ public class BallMagazine extends SubsystemBase {
 
   //--------------------------------------------------------------------------------------------------
   // Intake Methods
+  public void shiftBall(){
+    magazineMotor1.set(-C_MAGAZINE_SPEED);
+  }
+
   public void feedBall(){
-    //Assume this runs ball one position over
-    //magazineMotor1.set(-C_MAGAZINE_SPEED);
+    magazineMotor1.set(-C_MAGAZINE_SPEED);
+    preRoller.set(-C_PREROLLER_SPEED);
+  }
+
+  // TODO: Eventually change this method to a set constant speed
+  public void setPrerollerPercent(double percent){
+    preRoller.set(percent);
+  }
+
+  public void setPrerollerVoltage(double voltage){
+    preRoller.setVoltage(voltage);
+  }
+  
+  public void stopPreroller(){
+    preRoller.stopMotor();
   }
 
   public void stopMagazine(){
