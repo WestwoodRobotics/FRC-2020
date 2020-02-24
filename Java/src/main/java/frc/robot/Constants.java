@@ -119,8 +119,12 @@ public final class Constants{
         public static final double C_ELEVATOR_EPR = 1024*5;
         public static final double C_SPOOL_DIAMETER_METERS = 1;
             
-        public static final double C_ELEVATOR_minVOLT = 0.1;        // TODO: Change minVOlt later******************************  
-        public static final double C_ELEVATOR_lowerVOLT = 0.1;      // TODO: Change lowerVOlt later******************************  
+        public static final double C_ELEVATOR_stall_VOLT = 0.1;        // TODO: Change minVOlt later******************************  
+        public static final double C_ELEVATOR_lower_slow_VOLT = 0.1;      // TODO: Change lowerVOlt later******************************  
+        public static final double C_ELEVATOR_lower_fast_VOLT = 0.1;
+
+        public static final double C_ELEVATOR_MAX_SPEED = 1;
+        public static final double C_ELEVATOR_MAX_TOLERANCE = 0.1;
 
         public static double ticksToMeters(double ticks){
             return ticks*Math.PI*C_SPOOL_DIAMETER_METERS/C_ELEVATOR_EPR;
@@ -134,15 +138,7 @@ public final class Constants{
         public static final int P_LIFT_motor1_talSRX = 0;           
         public static final int P_LIFT_motor2_vicSPX = 0;           
         
-        public static final double C_LIFT_SPEED = 1;                
-               
-        // ************************************************
-        // Command Constants
-        public static final double C_eleMAX_SPEED = 1;
-        public static final double C_eleMAX_TOLERANCE = 0.1;        //TODO: Change tolerance later**************************
-        public static final double C_liftROBO_SPEED = 1;
-        public static final double C_liftROBO_TOLERANCE = 0.1;      //TODO: Change tolerance later**************************
-
+        public static final double C_LIFT_VOLTS = 1;
 
     }
 

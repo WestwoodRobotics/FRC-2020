@@ -24,7 +24,7 @@ public class LiftRobot extends CommandBase {
   // Variables
   private Elevator s_elevator;
   private Lift s_lift;
-  private double speed;
+  private double volts;
   private double tolerance;
   //--------------------------------------------------------------------------------------------------
   // Constructor
@@ -32,8 +32,7 @@ public class LiftRobot extends CommandBase {
     this.s_elevator = s_elevator;
     this.s_lift   = s_lift;
     
-    tolerance = C_liftROBO_TOLERANCE;
-    speed = C_liftROBO_SPEED;
+    volts = C_LIFT_VOLTS;
 
     addRequirements(s_lift, s_elevator); 
   }
@@ -49,7 +48,7 @@ public class LiftRobot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      s_lift.liftPercent(speed);
+      s_lift.liftVolts(volts);
   }
   
   //--------------------------------------------------------------------------------------------------

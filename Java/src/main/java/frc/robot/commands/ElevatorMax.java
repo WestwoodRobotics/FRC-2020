@@ -29,8 +29,8 @@ public class ElevatorMax extends CommandBase {
   public ElevatorMax(Elevator s_elevator) {
     this.s_elevator = s_elevator;
     
-    tolerance = C_eleMAX_TOLERANCE;
-    speed = C_eleMAX_SPEED;
+    tolerance = C_ELEVATOR_MAX_TOLERANCE;
+    speed = C_ELEVATOR_MAX_SPEED;
 
     addRequirements(s_elevator); 
   }
@@ -52,7 +52,7 @@ public class ElevatorMax extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_elevator.stopCoast();
+    s_elevator.stall();
   }
 
   //--------------------------------------------------------------------------------------------------

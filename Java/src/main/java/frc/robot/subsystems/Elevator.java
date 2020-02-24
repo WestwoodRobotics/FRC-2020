@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.LiftConstants.*;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,12 +38,16 @@ public class Elevator extends SubsystemBase {
   public void eleLiftPercent(double speed)  {elevatorMotor.set(speed);}
   public void stopMotor()                   {elevatorMotor.stopMotor();}
 
-  public void stopCoast(){
-    this.eleLiftVolts(C_ELEVATOR_minVOLT);
+  public void coast(){
+    this.elevatorMotor.setNeutralMode(NeutralMode.Coast);
+  }
+
+  public void stall(){
+    this.eleLiftVolts(C_ELEVATOR_stall_VOLT);
   }
 
   public void lowerElevator(){
-    this.eleLiftVolts(C_ELEVATOR_lowerVOLT);
+    this.eleLiftVolts(C_ELEVATOR_lower_slow_VOLT);
   }
   //-------------------------------------------------------------
       //Encoders
