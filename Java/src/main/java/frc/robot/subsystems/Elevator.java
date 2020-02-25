@@ -34,21 +34,14 @@ public class Elevator extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Methods for Elevator
 
-  public void eleLiftVolts(double v)        {elevatorMotor.setVoltage(v);}
+  public void eleLiftVolts(double volts)    {elevatorMotor.setVoltage(volts);}
   public void eleLiftPercent(double speed)  {elevatorMotor.set(speed);}
   public void stopMotor()                   {elevatorMotor.stopMotor();}
 
-  public void coast(){
-    this.elevatorMotor.setNeutralMode(NeutralMode.Coast);
-  }
+  public void coast()                       {this.elevatorMotor.setNeutralMode(NeutralMode.Coast);}
+  public void stall()                       {this.eleLiftVolts(C_ELEVATOR_stall_VOLT);}
+  public void lowerElevator(double volts)   {this.eleLiftVolts(volts);}
 
-  public void stall(){
-    this.eleLiftVolts(C_ELEVATOR_stall_VOLT);
-  }
-
-  public void lowerElevator(){
-    this.eleLiftVolts(C_ELEVATOR_lower_slow_VOLT);
-  }
   //-------------------------------------------------------------
       //Encoders
   public double getEncoderPos()   {return elevatorMotor.getSelectedSensorPosition();}

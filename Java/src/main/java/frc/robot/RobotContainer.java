@@ -18,6 +18,8 @@ import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Lift;
+import static frc.robot.Constants.LiftConstants.*;
+
 
 public class RobotContainer{
     
@@ -31,7 +33,7 @@ public class RobotContainer{
     
         // Declare Commands
     private ProfiledTurnTo      a_turn2;
-    private LiftRobot           t_liftRobot;
+    
         // Declare JoyStick
     private Joystick leftJoy    = new Joystick(P_OI_JOY_LEFT);
     private Joystick rightJoy   = new Joystick(P_OI_JOY_RIGHT);            
@@ -62,7 +64,7 @@ public class RobotContainer{
     // Configuring Buttons
 
     private void configureButtonBindings(){
-        //Configure button bindings
+        // DriveTrain Commands
         (new JoystickButton(rightJoy, 1)).whenPressed(  ()-> s_driveTrain.setSlow(true))
                                          .whenReleased( ()-> s_driveTrain.setSlow(false));
 
@@ -80,7 +82,10 @@ public class RobotContainer{
         // ElevatorLift Commands
         (new JoystickButton(leftJoy, 5)).whileActiveOnce(new ElevatorMax(s_elevator));
         
-        (new JoystickButton(leftJoy, 6)).whenPressed(   ()-> s_elevator.lowerElevator())
+        (new JoystickButton(leftJoy, 6)).whenPressed(   ()-> s_elevator.lowerElevator(C_ELEVATOR_lower_slow_VOLT))
+                                        .whenReleased(  ()-> s_elevator.stall());
+
+        (new JoystickButton(leftJoy, 7)).whenPressed(   ()-> s_elevator.lowerElevator(C_ELEVATOR_lower_fast_VOLT))
                                         .whenReleased(  new LiftRobot(s_lift, s_elevator)); 
     }
 

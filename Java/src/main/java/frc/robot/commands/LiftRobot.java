@@ -30,9 +30,8 @@ public class LiftRobot extends CommandBase {
   // Constructor
   public LiftRobot(Lift s_lift, Elevator s_elevator) {
     this.s_elevator = s_elevator;
-    this.s_lift   = s_lift;
-    
-    volts = C_LIFT_VOLTS;
+    this.s_lift     = s_lift;
+    this.volts      = C_LIFT_VOLTS;
 
     addRequirements(s_lift, s_elevator); 
   }

@@ -117,17 +117,17 @@ public final class Constants{
         public static final int P_ELEVATOR_motor_talSRX = 0;        // TODO: Change ports later******************************
 
         public static final double C_ELEVATOR_EPR = 1024*5;
-        public static final double C_SPOOL_DIAMETER_METERS = 1;
+        public static final double C_ELEVATOR_SPOOL_DIAMETER_METERS = 1;
             
         public static final double C_ELEVATOR_stall_VOLT = 0.1;        // TODO: Change minVOlt later******************************  
         public static final double C_ELEVATOR_lower_slow_VOLT = 0.1;      // TODO: Change lowerVOlt later******************************  
         public static final double C_ELEVATOR_lower_fast_VOLT = 0.1;
 
-        public static final double C_ELEVATOR_MAX_SPEED = 1;
+        public static final double C_ELEVATOR_MAX_VOLTS = 1;
         public static final double C_ELEVATOR_MAX_TOLERANCE = 0.1;
 
         public static double ticksToMeters(double ticks){
-            return ticks*Math.PI*C_SPOOL_DIAMETER_METERS/C_ELEVATOR_EPR;
+            return ticks*Math.PI*C_ELEVATOR_SPOOL_DIAMETER_METERS/C_ELEVATOR_EPR;
         }
 
         public static double talVelToMetersPerSec(double sensorVel){

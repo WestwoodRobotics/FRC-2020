@@ -22,7 +22,7 @@ public class ElevatorMax extends CommandBase {
   //--------------------------------------------------------------------------------------------------
   // Variables
   private Elevator s_elevator;
-  private double speed;
+  private double volts;
   private double tolerance;
   //--------------------------------------------------------------------------------------------------
   // Constructor
@@ -30,7 +30,7 @@ public class ElevatorMax extends CommandBase {
     this.s_elevator = s_elevator;
     
     tolerance = C_ELEVATOR_MAX_TOLERANCE;
-    speed = C_ELEVATOR_MAX_SPEED;
+    volts = C_ELEVATOR_MAX_VOLTS;
 
     addRequirements(s_elevator); 
   }
@@ -45,7 +45,7 @@ public class ElevatorMax extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      s_elevator.eleLiftPercent(speed);
+      s_elevator.eleLiftVolts(volts);
   }
   
   //--------------------------------------------------------------------------------------------------
