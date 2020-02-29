@@ -1,7 +1,13 @@
 {
             "brightness": 0,
+<<<<<<< Updated upstream
             "fps": 30,
             "height": 240,
+=======
+            "fps": 60,
+            "height": 480,
+            "width": 640,
+>>>>>>> Stashed changes
             "name": "PS3 Eyecam",
             "path": "/dev/v4l/by-id/usb-OmniVision_Technologies__Inc._USB_Camera-B4.09.24.1-video-index0",
             "pixel format": "yuyv",
@@ -59,6 +65,10 @@
                     "value": 0
                 }
             ],
+            "h": [74.43, 125.86],
+            "s": [42.18, 197.48],
+            "v": [199.40, 255.00],
+            "fov": 75,
             "stream": {
                 "properties": []
             },

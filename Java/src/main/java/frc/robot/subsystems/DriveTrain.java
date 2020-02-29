@@ -186,7 +186,7 @@ public class DriveTrain extends SubsystemBase {
         new Translation2d(1.0, -1.0),
         new Translation2d(1.0, -2.0)
       ), 
-      new Pose2d(2.0, -2.0, new Rotation2d(90.0)),
+      new Pose2d(2.0, -2.0, Rotation2d.fromDegrees(90.0)),
       config
     );
     
