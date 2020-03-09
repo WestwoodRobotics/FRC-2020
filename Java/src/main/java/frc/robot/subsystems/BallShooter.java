@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,21 +29,26 @@ public class BallShooter extends SubsystemBase {
   private CANSparkMax shooterMotor1 = new CANSparkMax(P_SHOOTER_spMAX_1, MotorType.kBrushless);
   private CANSparkMax shooterMotor2 = new CANSparkMax(P_SHOOTER_spMAX_2, MotorType.kBrushless);
 
-  private WPI_VictorSPX preRoller = new WPI_VictorSPX(P_PREROLLER_vicSPX);
+  private Solenoid hood = new Solenoid(P_HOOD_sol);
 
   private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(C_kS, C_kV, C_kA);
   private PIDController velPID = new PIDController(C_kP, C_kI, C_kD);
+
+  private double speedSetpoint = 0.0; // Rotations per minute
+  private E_SHOOT_POS pos;
   //--------------------------------------------------------------------------------------------------
   // Constructor
 
   public BallShooter() {
     //intake = false;
     shooterMotor2.follow(shooterMotor1, true);
+    
+    pos = E_SHOOT_POS.CLOSE;
+    speedSetpoint = 0.0;
   }
 
   //--------------------------------------------------------------------------------------------------
   // Shooter Methods
-
   public void setShooterPercent(double percent){
     shooterMotor1.set(percent);
   }
@@ -51,29 +57,46 @@ public class BallShooter extends SubsystemBase {
     shooterMotor1.setVoltage(voltage);
   }
 
-  public void setShooterVelocityPID(double metersPerSec){
+  public void setShooterVelocityPID(double rotationsPerMin){
+    speedSetpoint = rotationsPerMin;
     double volts = 0.0;
 
-    volts += feedforward.calculate(metersPerSec);
+    volts += feedforward.calculate(rotationsPerMin);
     volts += velPID.calculate(getShooterVel());
 
     this.setShooterVoltage(volts);
   }
 
-  // TODO: Eventually change this method to a set constant speed
-  public void setPrerollerPercent(double percent){
-    preRoller.set(percent);
+  public void setShooterVelocityPID(E_SHOOT_POS pos){
+    if(pos == E_SHOOT_POS.CLOSE)
+      this.setShooterVelocityPID(C_SHOOTER_SPEED_CLOSE);
+    else if(pos == E_SHOOT_POS.TRENCH)
+      this.setShooterVelocityPID(C_SHOOTER_SPEED_TRENCH);
+    else
+      this.stopShooter();
   }
 
-  public void setPrerollerVoltage(double voltage){
-    preRoller.setVoltage(voltage);
+  public void setHood(E_SHOOT_POS pos){
+    if(pos == E_SHOOT_POS.CLOSE){
+      hood.set(false);
+    }
+    else if(pos == E_SHOOT_POS.TRENCH){
+      hood.set(true);
+    }
   }
 
   public double getShooterVel(){
     return shooterMotor1.getEncoder().getVelocity();
   }
 
-  public void stopBall(){
+  public boolean isFlywheelReady(){
+    if(Math.abs(this.getShooterVel() - this.speedSetpoint) < C_SHOOTER_SPEED_TOLERANCE){
+      return true;
+    }
+    return false;
+  }
+
+  public void stopShooter(){
     shooterMotor1.stopMotor();
   }
 

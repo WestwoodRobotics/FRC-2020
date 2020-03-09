@@ -11,6 +11,8 @@ import static frc.robot.Constants.PowerCellConstants.*;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -26,16 +28,31 @@ public class BallIntake extends SubsystemBase {
   private CANSparkMax intakeMotor1 = new CANSparkMax(P_INTAKE_spMAX_1, MotorType.kBrushless);   
   private CANSparkMax intakeMotor2 = new CANSparkMax(P_INTAKE_spMAX_2, MotorType.kBrushless);
   
+  private Solenoid intakeSol1 = new Solenoid(P_INTAKE_sol_1);
+  private Solenoid intakeSol2 = new Solenoid(P_INTAKE_sol_2);
+
   //--------------------------------------------------------------------------------------------------
   // Constructor
   public BallIntake() {
     intakeMotor2.follow(intakeMotor1, true);
+    intakeSol1.set(false);
+    intakeSol2.set(false);
   }
 
   //--------------------------------------------------------------------------------------------------
   // Intake Methods
   public void intakeBall(){
     intakeMotor1.set(-C_INTAKE_SPEED);
+  }
+
+  public void extend(){
+    intakeSol1.set(true);
+    intakeSol2.set(true);
+  }
+
+  public void contract(){
+    intakeSol1.set(false);
+    intakeSol2.set(false);
   }
 
   public void stopBall(){
