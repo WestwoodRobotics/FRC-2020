@@ -162,25 +162,13 @@ public class DriveTrain extends SubsystemBase {
     double metersPerSec = ticksPerDecasec*10.0*Math.PI*C_WHEEL_DIAMETER_METERS/C_DRIVE_EPR;
     return metersPerSec;
   }
-
-  //Set slow mode
-  public void setSlow(boolean slowMode){
-    this.slowMode = slowMode;
-  }
-
-  //Get slow mode
-  public boolean getSlow(){
-    return slowMode;
-  }
-
-  public void setMaxOutput(double maxOutput){
-    drive.setMaxOutput(maxOutput);
-  }
-
-  // Stop wheels
-  public void stopWheels(){
-    drive.stopMotor();
-  }
+    
+  //Slow mode
+  public void     setSlow(boolean slowMode)       {this.slowMode = slowMode;}
+  public boolean  getSlow()                       {return slowMode;}
+  
+  public void   setMaxOutput(double maxOutput)  {drive.setMaxOutput(maxOutput);}
+  public void   stopWheels()                    {drive.stopMotor();}
 
   //--------------------------------------------------------------------------------------------------
   // Methods for Odometry/Trejectory
@@ -233,61 +221,27 @@ public class DriveTrain extends SubsystemBase {
     return ramseteCommand;
   }
 
-  public double getHeadingDegrees(){
-    return -imu.pidGet();
-  }
+  //-------------------------------------------------------------
+      //Turning
+  public double getHeadingDegrees()         {return -imu.pidGet();}
+  public double getHeadingRadians()         {return Math.toRadians(this.getHeadingDegrees());}
+  public double getTurnRate()               {return imu.getRate();} 
+  public void   zeroHeading()               {imu.reset();}
 
-  public double getHeadingRadians(){
-    return Math.toRadians(this.getHeadingDegrees());
-  }
-
-  public double getTurnRate(){
-    return imu.getRate();
-  } 
-  
-  public double leftEncoderGetTicks(){
-    return leftMaster.getSelectedSensorPosition();
-  }
-
-  public double rightEncoderGetTicks(){
-    return rightMaster.getSelectedSensorPosition();
-  }
-
-  public double leftEncoderGetMeters(){
-    return ticksToMeters(this.leftEncoderGetTicks());
-  }
-
-  public double rightEncoderGetMeters(){
-    return ticksToMeters(this.rightEncoderGetTicks());
-  }
-
-  public double getAverageEncoderTicks(){
-    return (leftEncoderGetTicks() + rightEncoderGetTicks())/2.0;
-  }
-
-  public double getAverageEncoderMeters(){
-    return (leftEncoderGetMeters() + rightEncoderGetMeters())/2.0;
-  }
-
-  public void zeroLeftEncoder(){
-    leftMaster.setSelectedSensorPosition(0);
-  }
-
-  public void zeroRightEncoder(){
-    rightMaster.setSelectedSensorPosition(0);
-  }
-
-  public void zeroHeading(){
-    imu.reset();
-  }
-
-  public DifferentialDriveKinematics getKinematics(){
-    return this.kinematics;
-  }
-
-  public SimpleMotorFeedforward getFeedForward(){
-    return this.feedforward;
-  }
+  //-------------------------------------------------------------
+      //Encoders
+  public double leftEncoderGetTicks()       {return leftMaster.getSelectedSensorPosition();}
+  public double rightEncoderGetTicks()      {return rightMaster.getSelectedSensorPosition();}
+  public double leftEncoderGetMeters()      {return ticksToMeters(this.leftEncoderGetTicks());}
+  public double rightEncoderGetMeters()     {return ticksToMeters(this.rightEncoderGetTicks());}
+  public double getAverageEncoderTicks()    {return (leftEncoderGetTicks() + rightEncoderGetTicks())/2.0;}
+  public double getAverageEncoderMeters()   {return (leftEncoderGetMeters() + rightEncoderGetMeters())/2.0;}
+  public void   zeroLeftEncoder()           {leftMaster.setSelectedSensorPosition(0);}
+  public void   zeroRightEncoder()          {rightMaster.setSelectedSensorPosition(0);}
+ 
+//-------------------------------------------------------------
+  public DifferentialDriveKinematics getKinematics()  {return this.kinematics;}
+  public SimpleMotorFeedforward      getFeedForward() {return this.feedforward;}
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds(){
     DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds(

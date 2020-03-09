@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.PowerCellConstants.E_SHOOT_POS;
 import frc.robot.commands.ElevatorMax;
+import frc.robot.commands.LiftRobot;
 import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
@@ -22,6 +23,8 @@ import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Lift;
+import static frc.robot.Constants.LiftConstants.*;
+
 
 public class RobotContainer{
     
@@ -96,17 +99,20 @@ public class RobotContainer{
         // BallMagazine Commands
         feedBall.and(new Trigger(() -> s_ballShooter.isFlywheelReady())).whenActive(() -> s_ballMagazine.feedBall());
 
-        // Elevator Commands
+        // ElevatorLift Commands
         (new JoystickButton(leftJoy, 5)).whileActiveOnce(new ElevatorMax(s_elevator));
         
-        // Lift Commands
-        (new JoystickButton(leftJoy, 6)).whenPressed(()     -> s_lift.liftPercentage(1))      //TODO: change speed*******************
-                                        .whenReleased(()    -> s_lift.stopMotor());
+        (new JoystickButton(leftJoy, 6)).whenPressed(   ()-> s_elevator.lowerElevator(C_ELEVATOR_lower_slow_VOLT))
+                                        .whenReleased(  ()-> s_elevator.stall());
+
+        (new JoystickButton(leftJoy, 7)).whenPressed(   ()-> s_elevator.lowerElevator(C_ELEVATOR_lower_fast_VOLT))
+                                        .whenReleased(  new LiftRobot(s_lift, s_elevator)); 
     }
 
     public Command getAutonomousCommand(String m_autoSelected){
         s_driveTrain.zeroHeading();
         s_driveTrain.resetOdometry(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
+        
         switch (m_autoSelected) {
             /*case "TurnTo":
                 return new TurnTo(SmartDashboard.getNumber("Degrees", 0.0), s_driveTrain);*/

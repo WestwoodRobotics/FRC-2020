@@ -7,41 +7,49 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.LiftConstants.*;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Lift;
 
-public class PullRobot extends CommandBase {
-  /**
-   * Creates a new PullRobot.
-   */
+
+/**
+ * Command that is responsible for pulling up the robot
+ */
+
+public class LiftRobot extends CommandBase {
 
   //--------------------------------------------------------------------------------------------------
   // Variables
+  private Elevator s_elevator;
   private Lift s_lift;
-  
+  private double volts;
+  private double tolerance;
   //--------------------------------------------------------------------------------------------------
   // Constructor
-  public PullRobot(Lift s_lift) {
-    this.s_lift = s_lift;
+  public LiftRobot(Lift s_lift, Elevator s_elevator) {
+    this.s_elevator = s_elevator;
+    this.s_lift     = s_lift;
+    this.volts      = C_LIFT_VOLTS;
 
-    addRequirements(s_lift); 
+    addRequirements(s_lift, s_elevator); 
   }
 
   //--------------------------------------------------------------------------------------------------
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    s_elevator.stopMotor();
   }
-
+ 
   //--------------------------------------------------------------------------------------------------
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /*TODO: s_lift.liftPercent(##);
-    s_lift.liftVoltage(##);
-    */
+      s_lift.liftVolts(volts);
   }
-
+  
   //--------------------------------------------------------------------------------------------------
   // Called once the command ends or is interrupted.
   @Override
@@ -53,6 +61,6 @@ public class PullRobot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return s_elevator.isCompressed(tolerance);
   }
 }

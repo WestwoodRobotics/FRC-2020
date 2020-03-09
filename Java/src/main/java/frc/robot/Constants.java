@@ -73,6 +73,7 @@ public final class Constants{
     //--------------------------------------------------------------------------------------------------
     // Constants for subsystems involved with PowerCells (Balls)
 
+
     public static final class PowerCellConstants{         // TODO: Change port/name later*****************************
         // Hood Constants
         public static final int P_HOOD_sol = 0;
@@ -129,26 +130,31 @@ public final class Constants{
     public static final class LiftConstants{
         
         // Elevator Constants
-        public static final int P_ELEVATOR_motor_talSRX = 0;      // TODO: Change ports later******************************
+        public static final int P_ELEVATOR_motor_talSRX = 0;        // TODO: Change ports later******************************
 
         public static final double C_ELEVATOR_EPR = 1024*5;
-        public static final double C_SPOOL_DIAMETER_METERS = 1;  
-        
+        public static final double C_ELEVATOR_SPOOL_DIAMETER_METERS = 1;
+            
+        public static final double C_ELEVATOR_stall_VOLT = 0.1;        // TODO: Change minVOlt later******************************  
+        public static final double C_ELEVATOR_lower_slow_VOLT = 0.1;      // TODO: Change lowerVOlt later******************************  
+        public static final double C_ELEVATOR_lower_fast_VOLT = 0.1;
+
+        public static final double C_ELEVATOR_MAX_VOLTS = 1;
+        public static final double C_ELEVATOR_MAX_TOLERANCE = 0.1;
+
         public static double ticksToMeters(double ticks){
-            return ticks*Math.PI*C_SPOOL_DIAMETER_METERS/C_ELEVATOR_EPR;
+            return ticks*Math.PI*C_ELEVATOR_SPOOL_DIAMETER_METERS/C_ELEVATOR_EPR;
         }
 
         public static double talVelToMetersPerSec(double sensorVel){
             return ticksToMeters(sensorVel) * 10;
         }
 
-        // Lift Constants
-        public static final int P_LIFT_motor1_talSRX = 0;
-        public static final int P_LIFT_motor2_talSRX = 0;
-               
-        // ************************************************
-        // Command Constants
-        public static final int C_eleMAX_SPEED = 1;
+        // Lift Constants                                           // TODO: Change all LiftConstants later***********************
+        public static final int P_LIFT_motor1_talSRX = 0;           
+        public static final int P_LIFT_motor2_vicSPX = 0;           
+        
+        public static final double C_LIFT_VOLTS = 1;
 
     }
 

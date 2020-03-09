@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.LiftConstants.*;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,35 +23,46 @@ public class Elevator extends SubsystemBase {
   //--------------------------------------------------------------------------------------------------
   // Variables/Features of Lift
   private final WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(P_ELEVATOR_motor_talSRX);    
+  private boolean isCompressed = false;
 
   //--------------------------------------------------------------------------------------------------
   // Constructor
-
   public Elevator() {
+    this.zeroEncoder();
   }
 
   //--------------------------------------------------------------------------------------------------
   // Methods for Elevator
 
-  public void eleLiftVolts(double v){
-    elevatorMotor.setVoltage(v);
-  }
+  public void eleLiftVolts(double volts)    {elevatorMotor.setVoltage(volts);}
+  public void eleLiftPercent(double speed)  {elevatorMotor.set(speed);}
+  public void stopMotor()                   {elevatorMotor.stopMotor();}
 
-  public void eleLiftPercent(double speed){
-    elevatorMotor.set(speed);
-  }
+  public void coast()                       {this.elevatorMotor.setNeutralMode(NeutralMode.Coast);}
+  public void stall()                       {this.eleLiftVolts(C_ELEVATOR_stall_VOLT);}
+  public void lowerElevator(double volts)   {this.eleLiftVolts(volts);}
 
-  public void stopMotor(){
-    elevatorMotor.set(0.1); //TODO: Change this later
+  //-------------------------------------------------------------
+      //Encoders
+  public double getEncoderPos()   {return elevatorMotor.getSelectedSensorPosition();}
+  public double getEncoderVel()   {return elevatorMotor.getSelectedSensorVelocity();}
+  
+  public void   zeroEncoder()     {elevatorMotor.setSelectedSensorPosition(0);}
+
+  //-------------------------------------------------------------
+      // Velocity
+  public double getVelocityMeterPerSec()  {return talVelToMetersPerSec(getEncoderVel());} // TODO: Complete the method**************
+  
+
+  //-------------------------------------------------------------
+  public boolean isCompressed(double tolerance){
+    if(this.getEncoderPos() == tolerance || this.getEncoderPos() == -tolerance){
+      isCompressed = true;
+    }
+    return isCompressed;
   }
   
-  public double getVelocity(){
-    return talVelToMetersPerSec(elevatorMotor.getSelectedSensorVelocity());   // TODO: Complete the method**************
-  }
-
-  public boolean atMax(){
-    return getVelocity() > 0.1;                        //TODO: Check the actual velocity********************************
-  }
+  public boolean atMax(double tolerance)  {return getVelocityMeterPerSec() <= tolerance;}
 
 
   //--------------------------------------------------------------------------------------------------
