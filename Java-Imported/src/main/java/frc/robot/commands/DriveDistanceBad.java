@@ -7,51 +7,49 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.BallIntake;
-import frc.robot.subsystems.BallMagazine;
+import frc.robot.Constants.DriveConstants.*;
 
-public class RunIntake extends CommandBase {
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveTrain;
+
+public class DriveDistanceBad extends CommandBase {
   /**
-   * Creates a new RunIntake.
+   * Creates a new DriveDistanceTime.
    */
 
-  BallIntake s_ballIntake;
-  BallMagazine s_ballMagazine;
+  DriveTrain s_driveTrain;
+  double meters;
+  double percent;
 
-  public RunIntake(BallIntake s_ballIntake, BallMagazine s_ballMagazine) {
+  public DriveDistanceBad(double meters, double percent, DriveTrain s_driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.s_ballIntake = s_ballIntake;
-    this.s_ballMagazine = s_ballMagazine;
-    addRequirements(s_ballIntake);
+    this.s_driveTrain = s_driveTrain;
+    this.meters = meters;
+    this.percent = percent;
+    addRequirements(s_driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    s_ballIntake.extend();
-    s_ballMagazine.stopPreroller();
+    s_driveTrain.zeroLeftEncoder();
+    s_driveTrain.zeroRightEncoder();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_ballIntake.intakeBall();
-    s_ballMagazine.shiftBall();
-    s_ballMagazine.stopPreroller();
+    s_driveTrain.driveWheelsPercent(percent, percent);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_ballIntake.contract();
-    s_ballIntake.stopBall();
-    s_ballMagazine.stopMagazine();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return s_driveTrain.getAverageEncoderMeters() >= meters;
   }
 }
