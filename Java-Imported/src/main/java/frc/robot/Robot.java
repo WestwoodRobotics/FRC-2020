@@ -67,12 +67,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    String autoSelected = SmartDashboard.getString("Auto choices", "None");
+    /*String autoSelected = SmartDashboard.getString("Auto choices", "None");
     Command autoCommand = rc.getAutonomousCommand(autoSelected);
     
     if(autoCommand != null){
       autoCommand.schedule();
-    }
+    }*/
   }
 
   /**

@@ -151,7 +151,7 @@ public class DriveTrain extends SubsystemBase {
   public void   stopWheels()                    {drive.stopMotor();}
 
   //--------------------------------------------------------------------------------------------------
-  // Methods for Odometry/Trejectory
+  // Methods for Odometry/Trajectory
 
   public Pose2d getPose(){
     return odometry.getPoseMeters();

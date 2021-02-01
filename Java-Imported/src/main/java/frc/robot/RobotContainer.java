@@ -1,24 +1,17 @@
 package frc.robot;
 
-import static frc.robot.Constants.JoyConstants.*;
+import static frc.robot.Constants.JoyConstants.P_OI_JOY_LEFT;
+import static frc.robot.Constants.JoyConstants.P_OI_JOY_MECH;
+import static frc.robot.Constants.JoyConstants.P_OI_JOY_RIGHT;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.PowerCellConstants.E_SHOOT_POS;
-import frc.robot.commands.DriveDistance;
-import frc.robot.commands.DriveDistanceBad;
-import frc.robot.commands.ProfiledTurnTo;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
-import frc.robot.commands.TankDrive;
-import frc.robot.subsystems.BallIntake;
 import frc.robot.subsystems.BallMagazine;
 import frc.robot.subsystems.BallShooter;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Lift;
 
